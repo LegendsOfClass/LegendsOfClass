@@ -1,0 +1,9 @@
+{
+  "name": "@loce/server-realtime",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "./src/index.ts",
+  "scripts": { "typecheck": "tsc -p tsconfig.json --noEmit" },
+  "dependencies": { "ws": "^8.18.0" },
+  "devDependencies": { "typescript": "^5.5.0", "@types/ws": "^8.5.0", "@types/node": "^20.14.0" }
+}

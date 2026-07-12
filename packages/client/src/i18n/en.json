@@ -114,5 +114,12 @@
   "ui.guide.body2": "Tier 2 jobs (Paladin, Dragoon, Sage and more) are waiting to be unlocked by fusing two Lv.50 jobs!",
   "ui.guide.ok": "Let's go!",
   "ui.jobs.t2": "Tier 2 — unlock by Fusion (two jobs Lv.50)",
-  "ui.jobs.locked": "Locked"
+  "ui.jobs.locked": "Locked",
+  "ui.chat.title": "Map Chat",
+  "ui.chat.online": "online",
+  "ui.chat.offline": "offline",
+  "ui.chat.placeholder": "Say something…",
+  "ui.chat.offlineHint": "Reconnecting…",
+  "ui.chat.send": "Send",
+  "ui.chat.empty": "No messages yet — say hi!"
 }

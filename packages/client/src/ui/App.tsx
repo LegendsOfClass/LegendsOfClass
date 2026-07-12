@@ -8,6 +8,8 @@ import {
 } from '../state/store';
 import { JOBS, ITEMS, GAME, type BattleResponse } from '@loce/shared';
 import { DevPanel } from './DevPanel';
+import { ChatBox } from './ChatBox';
+import { initRealtime, rtLeave, rtRefresh } from '../net/realtime';
 
 type PanelId = 'none' | 'jobs' | 'character' | 'bag' | 'dev' | 'loot';
 
@@ -23,6 +25,7 @@ export function App() {
 
   // ---- boot: token → profile → enter world ----
   useEffect(() => {
+    initRealtime(() => localStorage.getItem('loce.token'));
     const offs = [
       EventBus.on('profile', rerender),
       EventBus.on('open-panel', (p: PanelId) => setPanel(p)),
@@ -60,6 +63,7 @@ export function App() {
     setBusy(true);
     try {
       const resp = await api<BattleResponse>('/battle/start', { nodeId });
+      rtLeave();
       EventBus.emit('start-battle-replay', resp);
     } catch (e) { showErr(e); }
     finally { setBusy(false); }
@@ -104,7 +108,7 @@ export function App() {
         <div>
           🪙 {profile?.state.gold ?? 0} · 💎 {profile?.state.diamond ?? 0}
           <button className="small" style={{ marginLeft: 10 }} onClick={() => { setLang(getLang() === 'th' ? 'en' : 'th'); rerender(); }}>{t('ui.common.lang')}</button>
-          <button className="small" onClick={() => { setToken(null); clearProfile(); location.reload(); }}>{t('ui.common.logout')}</button>
+          <button className="small" onClick={() => { rtLeave(); setToken(null); clearProfile(); location.reload(); }}>{t('ui.common.logout')}</button>
         </div>
       </div>
 
@@ -117,6 +121,8 @@ export function App() {
           <button onClick={() => travel('town')}>{t('ui.field.return')}</button>}
         {import.meta.env.DEV && <button style={{ background: '#7a3a3a' }} onClick={() => setPanel('dev')}>{t('ui.hud.dev')}</button>}
       </div>
+
+      <ChatBox />
 
       {err && <div className="panel" style={{ top: 60, left: '50%', transform: 'translateX(-50%)' }}><span className="err">{err}</span></div>}
 
@@ -278,6 +284,7 @@ function JobsPanel({ onClose, showErr }: { onClose: () => void; showErr: (e: unk
       await api('/jobs/switch', { jobId });
       const p = await refreshProfile();
       (window as unknown as { __activeJob?: string }).__activeJob = p.state.current_job_id;
+      rtRefresh();
     } catch (e) { showErr(e); }
   }
   const tier1 = Object.values(JOBS).filter(j => j.tier <= 1);

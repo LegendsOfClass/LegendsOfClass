@@ -14,7 +14,9 @@ import { jobRoutes } from './routes/jobs.js';
 import { battleRoutes } from './routes/battle.js';
 import { itemRoutes } from './routes/items.js';
 import { devRoutes } from './routes/dev.js';
-import { DATA_VERSION } from '@loce/shared';
+import { DATA_VERSION, MAPS } from '@loce/shared';
+import { attachRealtime } from '@loce/server-realtime';
+import { pool } from './db/pool.js';
 
 const app = Fastify({ logger: true });
 
@@ -55,6 +57,26 @@ if (config.serveClient) {
 }
 
 await runMigrations(app.log);
+
+// M2 (D-026): realtime presence hub shares this HTTP server — one deploy service, same origin WS.
+attachRealtime({
+  httpServer: app.server,
+  verifyToken: (token) => {
+    const payload = app.jwt.verify<{ accountId: number }>(token);
+    return payload.accountId;
+  },
+  loadPlayer: async (accountId) => {
+    const r = await pool.query(
+      `SELECT a.display_name, s.current_job_id, s.current_map
+       FROM accounts a JOIN account_state s ON s.account_id = a.id WHERE a.id = $1`,
+      [accountId],
+    );
+    if (!r.rowCount) return null;
+    return { name: r.rows[0].display_name, jobId: r.rows[0].current_job_id, mapId: r.rows[0].current_map };
+  },
+  log: { info: (m) => app.log.info(m), warn: (m) => app.log.warn(m) },
+  validMaps: Object.keys(MAPS),
+});
 
 app.listen({ port: config.port, host: '0.0.0.0' })
   .then(() => app.log.info(`api up on :${config.port}`))

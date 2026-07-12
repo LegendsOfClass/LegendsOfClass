@@ -3,7 +3,6 @@
 > and scheduled into a milestone.
 
 ## Deferred by milestone plan (approved scope, later milestone)
-- [M2] Colyseus presence: see players, chat, channels
 - [M3] Full T1 skill kits **including passives & ultimates** (Archer/Healer base+S1+Heal already shipped early per D-025), Priority Builder UI, cross-job P2–P4 (D-006), Map 2
 - [M4] Fusion→T2, Mastery, Rebirth, enhancement UI, sets, monster cards, presets
 - [M5] Maps 3–4, all 20 monsters, 4 minibosses, daily quests, tutorial gates, revive scrolls, potions (A-06), mixed monster groups, NPC shops (incl. selling items)
@@ -22,6 +21,8 @@
 - Password reset / email verification flow (accounts are username+password only in V1.0 docs)
 
 ## Tech debt / polish candidates
+- Realtime scale-out: Redis pub/sub between instances when player counts outgrow one process (pre-launch)
+- Chat moderation: profanity filter, mute/block, report (M7)
 - Split Phaser into a separate lazy chunk (bundle currently ~1.6 MB)
 - Structured logging + request ids surfaced to client error toasts
 - Docker image for server-api (compose currently runs infra only)
