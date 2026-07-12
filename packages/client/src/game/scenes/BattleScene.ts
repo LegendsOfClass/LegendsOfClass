@@ -66,7 +66,7 @@ export class BattleScene extends Phaser.Scene {
     const texKey = u.side === 0
       ? `unit.${u.nameKey && this.textures.exists(`unit.${u.nameKey}`) ? u.nameKey : this.playerTex()}`
       : `unit.${u.id.split('#')[0]}`;
-    const sprite = this.add.sprite(x, y, this.textures.exists(texKey) ? texKey : 'unit.novice');
+    const sprite = this.add.sprite(x, y, this.textures.exists(texKey) ? texKey : 'unit.fallback');
     const top = y - sprite.displayHeight / 2;
     const label = this.add.text(x, top - 24, u.side === 0 ? u.nameKey : t(u.nameKey), { fontSize: '12px', color: '#fff' }).setOrigin(0.5);
     const hpBack = this.add.rectangle(x, top - 10, 64, 7, 0x111111).setOrigin(0.5);
@@ -76,7 +76,7 @@ export class BattleScene extends Phaser.Scene {
 
   private playerTex() {
     // active job texture for the player unit
-    const job = (window as unknown as { __activeJob?: string }).__activeJob ?? 'novice';
+    const job = (window as unknown as { __activeJob?: string }).__activeJob ?? 'swordman';
     return job;
   }
 

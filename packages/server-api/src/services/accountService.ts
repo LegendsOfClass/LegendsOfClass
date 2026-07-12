@@ -9,16 +9,14 @@ export interface JobRow {
 }
 export interface ItemRow { id: number; item_id: string; rarity: string; enhance_level: number; equipped_slot: string | null; }
 
-export async function createAccount(c: PoolClient, username: string, displayName: string, passwordHash: string) {
+export async function createAccount(c: PoolClient, username: string, displayName: string, passwordHash: string, jobId: string) {
   const acc = await c.query(
     'INSERT INTO accounts(username, display_name, password_hash) VALUES($1,$2,$3) RETURNING id',
     [username, displayName, passwordHash],
   );
   const id: number = acc.rows[0].id;
-  await c.query('INSERT INTO account_state(account_id) VALUES($1)', [id]);
-  await c.query(
-    `INSERT INTO jobs(account_id, job_id) VALUES($1,'novice')`, [id],
-  );
+  await c.query('INSERT INTO account_state(account_id, current_job_id) VALUES($1,$2)', [id, jobId]);
+  await c.query('INSERT INTO jobs(account_id, job_id) VALUES($1,$2)', [id, jobId]);
   await addCurrency(c, id, 'diamond', 1000, 'starter'); // docs/07-economy: test currency for new players
   return id;
 }

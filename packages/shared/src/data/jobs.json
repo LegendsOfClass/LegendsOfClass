@@ -1,5 +1,6 @@
 {
-  "novice":   { "id": "novice", "tier": 0, "nameKey": "job.novice", "base": { "str": 10, "dex": 10, "con": 10, "int": 10 }, "normalAttackStat": "PATK" },
   "swordman": { "id": "swordman", "tier": 1, "nameKey": "job.swordman", "base": { "str": 18, "dex": 10, "con": 16, "int": 6 }, "normalAttackStat": "PATK" },
-  "mage":     { "id": "mage", "tier": 1, "nameKey": "job.mage", "base": { "str": 6, "dex": 10, "con": 10, "int": 24 }, "normalAttackStat": "MATK" }
+  "mage":     { "id": "mage", "tier": 1, "nameKey": "job.mage", "base": { "str": 6, "dex": 10, "con": 10, "int": 24 }, "normalAttackStat": "MATK" },
+  "archer":   { "id": "archer", "tier": 1, "nameKey": "job.archer", "base": { "str": 12, "dex": 22, "con": 10, "int": 6 }, "normalAttackStat": "PATK" },
+  "healer":   { "id": "healer", "tier": 1, "nameKey": "job.healer", "base": { "str": 6, "dex": 10, "con": 14, "int": 20 }, "normalAttackStat": "MATK" }
 }

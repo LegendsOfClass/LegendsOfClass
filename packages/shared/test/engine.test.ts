@@ -83,8 +83,8 @@ describe('combat engine determinism (docs/01-combat/06 golden contract)', () => 
     expect(r.outcome).toBe('victory');
     expect(r.hpRemaining['player']).toBeGreaterThan(0);
   });
-  it('a fresh Novice Lv1 vs THREE Wild Boars loses (danger exists)', () => {
-    const primary = { str: 10, dex: 10, con: 10, int: 10 };
+  it('a fresh Archer Lv1 vs THREE Wild Boars loses (danger exists)', () => {
+    const primary = { str: 12, dex: 22, con: 10, int: 6 };
     const d = computeDerived(primary, 1, {});
     const novice = playerSnapshot({
       level: 1, maxHp: d.maxHp, patk: d.patk, matk: d.matk, def: d.def,
@@ -103,8 +103,8 @@ describe('combat engine determinism (docs/01-combat/06 golden contract)', () => 
     expect(fastActions[0].tick).toBe(9);
     expect(fastActions[1].tick).toBe(17);
   });
-  it('First Aid fires only at <=60% HP (cast condition)', () => {
-    const healer = playerSnapshot({ prioritySkills: ['novice.first_aid', null, null, null] });
+  it('Heal fires only at <=70% HP (allyHp cast condition, solo=self)', () => {
+    const healer = playerSnapshot({ prioritySkills: ['healer.heal', null, null, null] });
     const r = simulate(setup([healer, monsterSnapshot('wild_boar', 1), monsterSnapshot('wild_boar', 2)], 99));
     const heals = r.events.filter(e => e.type === 'heal');
     for (const h of heals) {
@@ -113,7 +113,7 @@ describe('combat engine determinism (docs/01-combat/06 golden contract)', () => 
     }
     // engine must not heal at full HP on turn 1
     const firstAction = r.events.find(e => e.type === 'action' && e.actor === 'player');
-    expect(firstAction && 'skillId' in firstAction ? firstAction.skillId : '').not.toBe('novice.first_aid');
+    expect(firstAction && 'skillId' in firstAction ? firstAction.skillId : '').not.toBe('healer.heal');
   });
   it('timeout outcome triggers at maxTicks with an unkillable matchup', () => {
     const wall = playerSnapshot({ def: 999999, maxHp: 1000000, patk: 0, matk: 0, prioritySkills: [null, null, null, null] });

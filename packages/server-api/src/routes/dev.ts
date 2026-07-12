@@ -71,8 +71,10 @@ export async function devRoutes(app: FastifyInstance) {
       await c.query('DELETE FROM skills_unlocked WHERE account_id=$1', [id]);
       await c.query('DELETE FROM battles WHERE account_id=$1', [id]);
       await c.query('DELETE FROM transactions WHERE account_id=$1', [id]);
-      await c.query(`UPDATE account_state SET current_job_id='novice', gold=0, diamond=0, current_map='town', tutorial_flags='{}' WHERE account_id=$1`, [id]);
-      await c.query(`INSERT INTO jobs(account_id, job_id) VALUES($1,'novice')`, [id]);
+      const cur = await c.query('SELECT current_job_id FROM account_state WHERE account_id=$1', [id]);
+      const keepJob = cur.rows[0]?.current_job_id ?? 'swordman';
+      await c.query(`UPDATE account_state SET gold=0, diamond=0, current_map='town', tutorial_flags='{}' WHERE account_id=$1`, [id]);
+      await c.query('INSERT INTO jobs(account_id, job_id) VALUES($1,$2)', [id, keepJob]);
       await addCurrency(c, id, 'diamond', 1000, 'starter');
       devFlags.delete(id);
       return { ok: true };

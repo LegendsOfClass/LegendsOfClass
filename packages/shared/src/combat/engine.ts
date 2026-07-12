@@ -120,6 +120,13 @@ function castCondition(skill: SkillDef, actor: UnitState, units: UnitState[]): b
   if (m) return (actor.hp / actor.snap.maxHp) * 100 <= Number(m[1]);
   m = /^targets>=(\d+)$/.exec(cond);
   if (m) return units.filter((u) => u.alive && u.snap.side !== actor.snap.side).length >= Number(m[1]);
+  m = /^allyHp<=(\d+)$/.exec(cond);
+  if (m) {
+    const allies = units.filter((u) => u.alive && u.snap.side === actor.snap.side);
+    if (allies.length === 0) return false;
+    const lowest = allies.reduce((a, b) => (a.hp / a.snap.maxHp <= b.hp / b.snap.maxHp ? a : b));
+    return (lowest.hp / lowest.snap.maxHp) * 100 <= Number(m[1]);
+  }
   return true; // unknown condition fails open; server validates data at load time
 }
 

@@ -18,10 +18,12 @@ function rectTex(scene: Phaser.Scene, key: string, color: number, w: number, h: 
 }
 
 export function generatePlaceholders(scene: Phaser.Scene) {
-  // player per job
-  circleTex(scene, 'unit.novice', 0xd9c38c);
+  // player per job (fallbacks when /sprites/*.png missing)
+  circleTex(scene, 'unit.fallback', 0xd9c38c);
   circleTex(scene, 'unit.swordman', 0xd9534f);
   circleTex(scene, 'unit.mage', 0x5b7bd5);
+  circleTex(scene, 'unit.archer', 0x3f9e58);
+  circleTex(scene, 'unit.healer', 0xe8d06a);
   // monsters
   circleTex(scene, 'unit.green_slime', 0x5cb85c, 20);
   circleTex(scene, 'unit.wild_boar', 0x8a5a3b, 26);

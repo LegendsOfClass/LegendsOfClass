@@ -17,6 +17,7 @@ export function App() {
   const [logged, setLogged] = useState(false);
   const [panel, setPanel] = useState<PanelId>('none');
   const [loot, setLoot] = useState<BattleResponse | null>(null);
+  const [showGuide, setShowGuide] = useState(false);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState('');
 
@@ -39,6 +40,11 @@ export function App() {
     (window as unknown as { __activeJob?: string }).__activeJob = p.state.current_job_id;
     setLogged(true);
     EventBus.emit('goto-map', p.state.current_map);
+    const guideKey = 'loce_guide_' + p.account.username;
+    if (!localStorage.getItem(guideKey)) {
+      setShowGuide(true);
+      localStorage.setItem(guideKey, '1');
+    }
   }
 
   async function travel(mapId: string) {
@@ -90,7 +96,7 @@ export function App() {
       <div className="topbar">
         <div>
           <b>{profile?.account.display_name}</b>{' · '}
-          {t(JOBS[job?.job_id ?? 'novice'].nameKey)} Lv.{job?.level}
+          {job ? `${t(JOBS[job.job_id]?.nameKey ?? job.job_id)} Lv.${job.level}` : ''}
           <span style={{ marginLeft: 10, color: '#9fd' }}>
             EXP {exp.cur}/{exp.next}
           </span>
@@ -119,20 +125,32 @@ export function App() {
       {panel === 'jobs' && <JobsPanel onClose={() => setPanel('none')} showErr={showErr} />}
       {panel === 'dev' && import.meta.env.DEV && <DevPanel onClose={() => setPanel('none')} showErr={showErr} />}
       {panel === 'loot' && loot && <LootPanel resp={loot} onClose={() => setPanel('none')} onRepeat={() => { setPanel('none'); }} />}
+      {showGuide && (
+        <div className="panel center">
+          <h3>🗺 {t('ui.guide.title')}</h3>
+          <p style={{ lineHeight: 1.7, fontSize: 14 }}>⚔️ {t('ui.guide.body1')}</p>
+          <p style={{ lineHeight: 1.7, fontSize: 14 }}>✨ {t('ui.guide.body2')}</p>
+          <button onClick={() => setShowGuide(false)}>{t('ui.guide.ok')}</button>
+        </div>
+      )}
     </>
   );
 }
 
 /* ================= Login ================= */
+const BASE_JOBS = ['swordman', 'mage', 'archer', 'healer'] as const;
+
 function Login({ onDone, showErr, err }: { onDone: () => void; showErr: (e: unknown) => void; err: string }) {
   const [mode, setMode] = useState<'login' | 'register'>('login');
   const [u, setU] = useState(''); const [p, setP] = useState(''); const [d, setD] = useState('');
+  const [jobId, setJobId] = useState<string>('');
   const [busy, setBusy] = useState(false);
 
   async function submit() {
+    if (mode === 'register' && !jobId) { showErr({ messageKey: 'error.login.noJob' }); return; }
     setBusy(true);
     try {
-      const body = mode === 'login' ? { username: u, password: p } : { username: u, password: p, displayName: d };
+      const body = mode === 'login' ? { username: u, password: p } : { username: u, password: p, displayName: d, jobId };
       const r = await api<{ token: string }>(`/auth/${mode}`, body);
       setToken(r.token);
       onDone();
@@ -148,6 +166,24 @@ function Login({ onDone, showErr, err }: { onDone: () => void; showErr: (e: unkn
       <input placeholder={t('ui.login.username')} value={u} onChange={e => setU(e.target.value)} />
       <input placeholder={t('ui.login.password')} type="password" value={p} onChange={e => setP(e.target.value)} />
       {mode === 'register' && <input placeholder={t('ui.login.display')} value={d} onChange={e => setD(e.target.value)} />}
+      {mode === 'register' && (
+        <div style={{ margin: '8px 0' }}>
+          <div style={{ fontSize: 14, marginBottom: 6 }}>{t('ui.login.pickJob')}</div>
+          <div style={{ display: 'flex', gap: 8, justifyContent: 'center' }}>
+            {BASE_JOBS.map(j => (
+              <div key={j} onClick={() => setJobId(j)}
+                style={{ cursor: 'pointer', padding: 6, borderRadius: 8, textAlign: 'center', width: 76,
+                  border: jobId === j ? '2px solid #ffd24a' : '2px solid #444',
+                  background: jobId === j ? 'rgba(255,210,74,.12)' : 'rgba(0,0,0,.25)' }}>
+                <img src={`sprites/${j}.png`} alt={j} style={{ height: 56, display: 'block', margin: '0 auto 4px' }}
+                  onError={(e) => { (e.target as HTMLImageElement).style.visibility = 'hidden'; }} />
+                <div style={{ fontSize: 11 }}>{t(`job.${j}`)}</div>
+              </div>
+            ))}
+          </div>
+          <div style={{ fontSize: 12, opacity: .75, marginTop: 6 }}>{t('ui.login.pickJobHint')}</div>
+        </div>
+      )}
       {err && <div className="err">{err}</div>}
       <button disabled={busy} onClick={submit}>{t(mode === 'login' ? 'ui.login.login' : 'ui.login.register')}</button>
       <button className="small" onClick={() => setMode(mode === 'login' ? 'register' : 'login')}>
@@ -261,6 +297,16 @@ function JobsPanel({ onClose, showErr }: { onClose: () => void; showErr: (e: unk
         );
       })}
       {!inTown && <div className="err">{t('error.job.townOnly')}</div>}
+      <div style={{ marginTop: 10, paddingTop: 8, borderTop: '1px solid #444', fontSize: 12, opacity: .8 }}>
+        {t('ui.jobs.t2')}
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 6 }}>
+          {['magic_knight', 'paladin', 'dragoon', 'spell_archer', 'sage', 'bard'].map(j => (
+            <span key={j} style={{ padding: '2px 8px', borderRadius: 10, background: 'rgba(0,0,0,.3)', border: '1px solid #555' }}>
+              🔒 {t(`job.${j}`)}
+            </span>
+          ))}
+        </div>
+      </div>
       <button onClick={onClose}>{t('ui.common.close')}</button>
     </div>
   );

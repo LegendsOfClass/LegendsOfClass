@@ -9,14 +9,17 @@ const credentials = z.object({
   username: z.string().min(3).max(24).regex(/^[a-zA-Z0-9_]+$/),
   password: z.string().min(8).max(128),
 });
-const registerBody = credentials.extend({ displayName: z.string().min(2).max(20).trim() });
+const registerBody = credentials.extend({
+  displayName: z.string().min(2).max(20).trim(),
+  jobId: z.enum(['swordman', 'mage', 'archer', 'healer']), // D-025: pick a base job at creation
+});
 
 export async function authRoutes(app: FastifyInstance) {
   app.post('/auth/register', { config: { rateLimit: { max: config.devMode ? 300 : 5, timeWindow: '1 minute' } } }, async (req, reply) => {
     const body = registerBody.parse(req.body);
     const hash = await argon2.hash(body.password, { type: argon2.argon2id, memoryCost: 65536 });
     try {
-      const accountId = await tx((c) => createAccount(c, body.username.toLowerCase(), body.displayName, hash));
+      const accountId = await tx((c) => createAccount(c, body.username.toLowerCase(), body.displayName, hash, body.jobId));
       return { token: app.jwt.sign({ accountId }) };
     } catch (e) {
       if ((e as { code?: string }).code === '23505') return reply.code(409).send({ code: 409, messageKey: 'error.auth.taken' });

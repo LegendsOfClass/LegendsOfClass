@@ -28,7 +28,7 @@ export class TownScene extends Phaser.Scene {
     this.add.text(this.gate.x, this.gate.y - 72, t('ui.town.gate') + ' → ' + t('map.grassland'), { fontSize: '14px', color: '#ffe9c9' }).setOrigin(0.5);
 
     // player
-    const jobId = getProfile()?.state.current_job_id ?? 'novice';
+    const jobId = getProfile()?.state.current_job_id ?? 'swordman';
     this.player = this.add.sprite(w * 0.5, h * 0.68, `unit.${jobId}`);
     this.nameTag = this.add.text(this.player.x, this.player.y - this.player.displayHeight / 2 - 12, getProfile()?.account.display_name ?? '', { fontSize: '12px', color: '#fff' }).setOrigin(0.5);
 
@@ -38,7 +38,7 @@ export class TownScene extends Phaser.Scene {
 
     // job may change while standing in town — swap texture live
     const off = EventBus.on('profile', () => {
-      const j = getProfile()?.state.current_job_id ?? 'novice';
+      const j = getProfile()?.state.current_job_id ?? 'swordman';
       if (this.player?.active) this.player.setTexture(`unit.${j}`);
     });
     this.events.once('shutdown', off);

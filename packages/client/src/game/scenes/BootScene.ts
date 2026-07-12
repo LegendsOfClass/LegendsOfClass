@@ -7,11 +7,12 @@ import { EventBus } from '../../EventBus';
 const SPRITES: [string, string][] = [
   ['unit.swordman', 'sprites/swordman.png'],
   ['unit.mage', 'sprites/mage.png'],
+  ['unit.archer', 'sprites/archer.png'],
+  ['unit.healer', 'sprites/healer.png'],
   ['unit.green_slime', 'sprites/green_slime.png'],
   ['unit.wild_boar', 'sprites/wild_boar.png'],
   ['prop.jobmaster', 'sprites/jobmaster.png'],
   ['ui.logo', 'sprites/logo.png'],
-  // ['unit.novice', 'sprites/novice.png'],  // รอภาพ Novice จากทีมอาร์ต (ดู BACKLOG)
 ];
 
 export class BootScene extends Phaser.Scene {

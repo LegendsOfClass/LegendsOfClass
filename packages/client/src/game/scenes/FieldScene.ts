@@ -40,7 +40,7 @@ export class FieldScene extends Phaser.Scene {
       monSprite.on('pointerdown', fight);
     });
 
-    const jobId = getProfile()?.state.current_job_id ?? 'novice';
+    const jobId = getProfile()?.state.current_job_id ?? 'swordman';
     this.player = this.add.sprite(w * 0.5, h * 0.75, `unit.${jobId}`);
     this.input.on('pointerdown', (p: Phaser.Input.Pointer) => {
       this.target = new Phaser.Math.Vector2(p.worldX, p.worldY);
