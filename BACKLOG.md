@@ -10,6 +10,12 @@
 - [M6] Async PvP + Arena coins, World Boss + medals/leaderboard
 - [M7] Cash shop (mock), full i18n pass, security hardening, client code-splitting/perf
 
+## Art asset gaps (waiting on owner's image generator)
+- **Novice sprite** — absent from Job Bible; placeholder circle in use. Prompt suggestion given to owner.
+- **Wild Boar art** — Monster Bible tile labeled "Wild Boar" is a mushroom creature; using as-is until replacement PNG arrives (drop-in swap, no code change)
+- Gate / town props art, Field background tiles — placeholders in use
+- M3+: Archer/Healer sprites (exist in Job Bible, cut when M3 starts); skill/VFX atlas from VFX Bible; UI skin from UI Bible; equipment icons from Equipment Bible; card frames from Card Bible
+
 ## Ideas raised & parked (not in approved GDD)
 - "Goblin" as a new monster — **rejected** for M1 (mapping A chose Wild Boar); could join the map-2 roster if desired
 - Sound effects / background music (never specified in GDD scope for V1.0)

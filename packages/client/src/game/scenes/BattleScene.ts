@@ -67,9 +67,10 @@ export class BattleScene extends Phaser.Scene {
       ? `unit.${u.nameKey && this.textures.exists(`unit.${u.nameKey}`) ? u.nameKey : this.playerTex()}`
       : `unit.${u.id.split('#')[0]}`;
     const sprite = this.add.sprite(x, y, this.textures.exists(texKey) ? texKey : 'unit.novice');
-    const label = this.add.text(x, y - 46, u.side === 0 ? u.nameKey : t(u.nameKey), { fontSize: '12px', color: '#fff' }).setOrigin(0.5);
-    const hpBack = this.add.rectangle(x, y - 32, 64, 7, 0x111111).setOrigin(0.5);
-    const hpBar = this.add.rectangle(x - 32, y - 32, 64, 7, 0x53d769).setOrigin(0, 0.5);
+    const top = y - sprite.displayHeight / 2;
+    const label = this.add.text(x, top - 24, u.side === 0 ? u.nameKey : t(u.nameKey), { fontSize: '12px', color: '#fff' }).setOrigin(0.5);
+    const hpBack = this.add.rectangle(x, top - 10, 64, 7, 0x111111).setOrigin(0.5);
+    const hpBar = this.add.rectangle(x - 32, top - 10, 64, 7, 0x53d769).setOrigin(0, 0.5);
     this.views.set(u.id, { snap: u, sprite, hpBar, hpBack, label, hp: u.maxHp });
   }
 
@@ -117,7 +118,7 @@ export class BattleScene extends Phaser.Scene {
       const isHeal = ev.type === 'heal';
       const txt = ev.type === 'damage' && ev.miss ? 'MISS' : `${isHeal ? '+' : '-'}${ev.value}${ev.crit ? '!' : ''}`;
       const color = isHeal ? '#7CFC9A' : ev.crit ? '#ffd24a' : '#ff8a8a';
-      const float = this.add.text(v.sprite.x, v.sprite.y - 40, txt, { fontSize: ev.crit ? '18px' : '14px', color }).setOrigin(0.5);
+      const float = this.add.text(v.sprite.x, v.sprite.y - v.sprite.displayHeight / 2 - 4, txt, { fontSize: ev.crit ? '18px' : '14px', color }).setOrigin(0.5);
       this.tweens.add({ targets: float, y: float.y - 30, alpha: 0, duration: 650 / this.speed, onComplete: () => float.destroy() });
       if (!isHeal && !('miss' in ev && ev.miss)) {
         this.tweens.add({ targets: v.sprite, alpha: 0.4, yoyo: true, duration: 80 / this.speed });

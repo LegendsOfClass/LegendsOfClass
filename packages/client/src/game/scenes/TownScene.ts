@@ -23,14 +23,14 @@ export class TownScene extends Phaser.Scene {
 
     // hotspots
     this.jobmaster = this.add.sprite(w * 0.25, h * 0.4, 'prop.jobmaster').setInteractive({ useHandCursor: true });
-    this.add.text(this.jobmaster.x, this.jobmaster.y - 60, t('ui.town.jobmaster'), { fontSize: '14px', color: '#e8ddff' }).setOrigin(0.5);
+    this.add.text(this.jobmaster.x, this.jobmaster.y - this.jobmaster.displayHeight / 2 - 12, t('ui.town.jobmaster'), { fontSize: '14px', color: '#e8ddff' }).setOrigin(0.5);
     this.gate = this.add.sprite(w * 0.82, h * 0.5, 'prop.gate').setInteractive({ useHandCursor: true });
     this.add.text(this.gate.x, this.gate.y - 72, t('ui.town.gate') + ' → ' + t('map.grassland'), { fontSize: '14px', color: '#ffe9c9' }).setOrigin(0.5);
 
     // player
     const jobId = getProfile()?.state.current_job_id ?? 'novice';
     this.player = this.add.sprite(w * 0.5, h * 0.68, `unit.${jobId}`);
-    this.nameTag = this.add.text(this.player.x, this.player.y - 36, getProfile()?.account.display_name ?? '', { fontSize: '12px', color: '#fff' }).setOrigin(0.5);
+    this.nameTag = this.add.text(this.player.x, this.player.y - this.player.displayHeight / 2 - 12, getProfile()?.account.display_name ?? '', { fontSize: '12px', color: '#fff' }).setOrigin(0.5);
 
     this.input.on('pointerdown', (p: Phaser.Input.Pointer) => { this.target = new Phaser.Math.Vector2(p.worldX, p.worldY); });
     this.jobmaster.on('pointerdown', () => { this.target = new Phaser.Math.Vector2(this.jobmaster.x + 60, this.jobmaster.y + 30); });
@@ -54,7 +54,7 @@ export class TownScene extends Phaser.Scene {
       const a = Phaser.Math.Angle.Between(this.player.x, this.player.y, this.target.x, this.target.y);
       this.player.x += Math.cos(a) * speed; this.player.y += Math.sin(a) * speed;
     }
-    this.nameTag.setPosition(this.player.x, this.player.y - 36);
+    this.nameTag.setPosition(this.player.x, this.player.y - this.player.displayHeight / 2 - 12);
 
     if (this.cooldown <= 0) {
       if (Phaser.Math.Distance.Between(this.player.x, this.player.y, this.jobmaster.x, this.jobmaster.y) < 80) {

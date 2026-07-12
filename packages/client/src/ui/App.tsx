@@ -142,6 +142,8 @@ function Login({ onDone, showErr, err }: { onDone: () => void; showErr: (e: unkn
 
   return (
     <div className="panel center">
+      <img src="sprites/logo.png" alt="Legends of Class Evolution" style={{ maxWidth: 220, margin: '0 auto 8px', display: 'block' }}
+        onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
       <h3>{t('ui.login.title')}</h3>
       <input placeholder={t('ui.login.username')} value={u} onChange={e => setU(e.target.value)} />
       <input placeholder={t('ui.login.password')} type="password" value={p} onChange={e => setP(e.target.value)} />
