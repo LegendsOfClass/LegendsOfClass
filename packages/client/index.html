@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>Legends of Class Evolution</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; }
+    body { font-family: 'Segoe UI', 'Noto Sans Thai', sans-serif; background: #1a1a2e; color: #eee; overflow: hidden; }
+    #root { width: 100vw; height: 100vh; position: relative; }
+    #game-container { position: absolute; inset: 0; }
+    .panel { position: absolute; background: rgba(20,22,40,.95); border: 2px solid #4a5a8a; border-radius: 12px; padding: 16px; z-index: 10; }
+    .center { left: 50%; top: 50%; transform: translate(-50%,-50%); min-width: 300px; max-width: 92vw; max-height: 84vh; overflow-y: auto; }
+    button { background: #3a5aad; color: #fff; border: 0; border-radius: 8px; padding: 10px 14px; margin: 4px; cursor: pointer; font-size: 14px; min-height: 44px; }
+    button:hover { background: #4a6fd4; }
+    button.small { min-height: 30px; padding: 4px 10px; font-size: 12px; }
+    button:disabled { background: #555; cursor: default; }
+    input { padding: 10px; border-radius: 8px; border: 1px solid #4a5a8a; background: #12142a; color: #fff; margin: 4px 0; width: 100%; font-size: 14px; }
+    .hud { position: absolute; bottom: 0; left: 0; right: 0; display: flex; justify-content: center; gap: 6px; padding: 8px; background: rgba(10,12,25,.85); z-index: 5; }
+    .topbar { position: absolute; top: 0; left: 0; right: 0; display: flex; justify-content: space-between; padding: 8px 14px; background: rgba(10,12,25,.85); z-index: 5; font-size: 14px; }
+    .rarity-common{color:#bbb}.rarity-uncommon{color:#6c6}.rarity-rare{color:#59f}.rarity-epic{color:#b5f}.rarity-legendary{color:#fa4}
+    .row { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 6px 0; border-bottom: 1px solid #2a3252; }
+    h3 { margin-bottom: 10px; color: #9fb5ff; }
+    .err { color: #f88; font-size: 13px; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.tsx"></script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+{
+  "name": "legends-of-class-evolution",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run build -w @loce/shared && npm run build -w @loce/server-api && npm run build -w @loce/client",
+    "test": "npm run test -w @loce/shared",
+    "dev:api": "npm run dev -w @loce/server-api",
+    "dev:client": "npm run dev -w @loce/client",
+    "db:migrate": "node database/migrate.mjs",
+    "start:prod": "tsx packages/server-api/src/index.ts"
+  },
+  "engines": {
+    "node": "22.x"
+  }
+}

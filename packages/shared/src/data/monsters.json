@@ -1,0 +1,4 @@
+{
+  "green_slime": { "id": "green_slime", "nameKey": "mon.green_slime", "level": 2, "archetype": "tank", "signatureSkill": "monster.bounce", "map": "grassland" },
+  "wild_boar":   { "id": "wild_boar", "nameKey": "mon.wild_boar", "level": 8, "archetype": "bruiser", "signatureSkill": "monster.charge", "map": "grassland" }
+}

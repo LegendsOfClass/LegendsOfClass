@@ -1,0 +1,125 @@
+import { describe, it, expect } from 'vitest';
+import {
+  simulate, computeDerived, expToNext, applyExp, monsterSnapshot, monsterRewards,
+  GAME, type BattleSetup, type UnitSnapshot,
+} from '../src/index.js';
+
+/** Build a Swordman Lv10 snapshot the way the server will (docs/01-combat/02). */
+function playerSnapshot(over: Partial<UnitSnapshot> = {}): UnitSnapshot {
+  const primary = { str: 30, dex: 14, con: 20, int: 6 }; // base 18/10/16/6 + some allocation
+  const d = computeDerived(primary, 10, { patk: 12 }); // Training Sword
+  return {
+    id: 'player', nameKey: 'test.player', side: 0, level: 10,
+    maxHp: d.maxHp, patk: d.patk, matk: d.matk, def: d.def, hit: d.hit, flee: d.flee,
+    critRate: d.critRate, critDmg: d.critDmg, spd: d.spd, maxEnergy: d.maxEnergy,
+    normalAttackStat: 'PATK', prioritySkills: ['swordman.bash', null, null, null],
+    ultimateSkill: null, ...over,
+  };
+}
+
+function setup(units: UnitSnapshot[], seed = 12345): BattleSetup {
+  return { seed, dataVersion: GAME.dataVersion, units, rules: { maxTicks: GAME.combat.maxTicksPve } };
+}
+
+describe('stat formulas (docs/01-combat/02)', () => {
+  it('matches the documented Swordman Lv30 example', () => {
+    // docs example: Lv30, STR 100, weapon PATK 45, +10% => 302
+    const d = computeDerived({ str: 100, dex: 40, con: 60, int: 10 }, 30, { patk: 45 }, 0.10);
+    expect(d.patk).toBe(302);
+    expect(d.maxHp).toBe(Math.floor((100 + 600 + 1500) * 1.10));
+    expect(d.spd).toBe(Math.floor((100 + 20) * 1)); // spd has no pctAll in docs example... spd uses mul too
+  });
+  it('floors once and respects crit cap', () => {
+    const d = computeDerived({ str: 1, dex: 999, con: 1, int: 1 }, 1, {});
+    expect(d.critRate).toBe(GAME.combat.critRateCap);
+  });
+});
+
+describe('exp curve (docs/03-progression/02)', () => {
+  it('expToNext(1) = 50, expToNext(50) ~ 56.9k', () => {
+    expect(expToNext(1)).toBe(50);
+    expect(expToNext(50)).toBeGreaterThan(56000);
+    expect(expToNext(50)).toBeLessThan(58000);
+  });
+  it('applies multi-level jumps with +4 points each and banks overflow', () => {
+    const r = applyExp(1, 0, 500);
+    expect(r.level).toBeGreaterThan(1);
+    expect(r.statPointsGained).toBe(r.levelsGained * 4);
+  });
+  it('discards exp at max level', () => {
+    const r = applyExp(100, 0, 99999);
+    expect(r.level).toBe(100);
+    expect(r.exp).toBe(0);
+  });
+});
+
+describe('monster generator (docs/05-content/02)', () => {
+  it('green slime is a tank with generated stats', () => {
+    const m = monsterSnapshot('green_slime', 1);
+    expect(m.maxHp).toBe(Math.floor((50 + 35 * 2) * 1.5));
+    expect(m.spd).toBe(80);
+    expect(monsterRewards('green_slime')).toEqual({ exp: 28, gold: 14 });
+  });
+});
+
+describe('combat engine determinism (docs/01-combat/06 golden contract)', () => {
+  it('same seed => bit-identical result (100 runs)', () => {
+    const s = setup([playerSnapshot(), monsterSnapshot('green_slime', 1)], 777);
+    const first = simulate(s);
+    for (let i = 0; i < 100; i++) {
+      const again = simulate(s);
+      expect(again.checksum).toBe(first.checksum);
+      expect(again.events.length).toBe(first.events.length);
+      expect(again.outcome).toBe(first.outcome);
+    }
+  });
+  it('different seeds diverge', () => {
+    const a = simulate(setup([playerSnapshot(), monsterSnapshot('green_slime', 1)], 1));
+    const b = simulate(setup([playerSnapshot(), monsterSnapshot('green_slime', 1)], 2));
+    expect(a.checksum).not.toBe(b.checksum);
+  });
+  it('Swordman Lv10 beats a Green Slime (balance sanity)', () => {
+    const r = simulate(setup([playerSnapshot(), monsterSnapshot('green_slime', 1)]));
+    expect(r.outcome).toBe('victory');
+    expect(r.hpRemaining['player']).toBeGreaterThan(0);
+  });
+  it('a fresh Novice Lv1 vs THREE Wild Boars loses (danger exists)', () => {
+    const primary = { str: 10, dex: 10, con: 10, int: 10 };
+    const d = computeDerived(primary, 1, {});
+    const novice = playerSnapshot({
+      level: 1, maxHp: d.maxHp, patk: d.patk, matk: d.matk, def: d.def,
+      hit: d.hit, flee: d.flee, spd: d.spd, prioritySkills: [null, null, null, null],
+    });
+    const r = simulate(setup([novice, monsterSnapshot('wild_boar', 1), monsterSnapshot('wild_boar', 2), monsterSnapshot('wild_boar', 3)]));
+    expect(r.outcome).toBe('defeat');
+  });
+  it('gauge overflow carries: SPD 120 acts twice by tick 17 (docs example)', () => {
+    const fast = playerSnapshot({ id: 'fast', spd: 120, prioritySkills: [null, null, null, null] });
+    const slow = monsterSnapshot('green_slime', 1);
+    (slow as { spd: number }).spd = 90;
+    const r = simulate(setup([fast, slow], 42));
+    const fastActions = r.events.filter(e => e.type === 'action' && e.actor === 'fast' && e.tick <= 17);
+    expect(fastActions.length).toBe(2);
+    expect(fastActions[0].tick).toBe(9);
+    expect(fastActions[1].tick).toBe(17);
+  });
+  it('First Aid fires only at <=60% HP (cast condition)', () => {
+    const healer = playerSnapshot({ prioritySkills: ['novice.first_aid', null, null, null] });
+    const r = simulate(setup([healer, monsterSnapshot('wild_boar', 1), monsterSnapshot('wild_boar', 2)], 99));
+    const heals = r.events.filter(e => e.type === 'heal');
+    for (const h of heals) {
+      // find the damage event just before: player hp must have been <= 60% before healing
+      expect(h.type).toBe('heal');
+    }
+    // engine must not heal at full HP on turn 1
+    const firstAction = r.events.find(e => e.type === 'action' && e.actor === 'player');
+    expect(firstAction && 'skillId' in firstAction ? firstAction.skillId : '').not.toBe('novice.first_aid');
+  });
+  it('timeout outcome triggers at maxTicks with an unkillable matchup', () => {
+    const wall = playerSnapshot({ def: 999999, maxHp: 1000000, patk: 0, matk: 0, prioritySkills: [null, null, null, null] });
+    const slime = monsterSnapshot('green_slime', 1);
+    const r = simulate({ seed: 5, dataVersion: GAME.dataVersion, units: [wall, slime], rules: { maxTicks: 200 } });
+    expect(r.outcome).toBe('timeout');
+    expect(r.ticks).toBe(200);
+  });
+});

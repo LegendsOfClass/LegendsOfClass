@@ -1,0 +1,43 @@
+{
+  "dataVersion": "0.1.0",
+  "combat": {
+    "ticksPerSecond": 10, "gaugeMax": 1000, "spdMin": 20,
+    "maxTicksPve": 3000, "maxTicksPvp": 1800,
+    "ultCost": 100,
+    "energyGain": { "attack": 15, "skill": 10, "hitTaken": 8, "kill": 25, "miss": 15 },
+    "energyIntScale": 0.001,
+    "hit": { "base": 90, "scale": 0.5, "min": 50, "max": 100 },
+    "variance": { "min": 0.95, "max": 1.05 },
+    "critRateCap": 50, "healCritDmg": 130
+  },
+  "statConversion": {
+    "patk": { "perStr": 2, "perLevel": 1 },
+    "matk": { "perInt": 2, "perLevel": 1 },
+    "maxHp": { "base": 100, "perLevel": 20, "perCon": 25 },
+    "def": { "perCon": 1 },
+    "hitAttr": { "base": 80, "perDex": 1 },
+    "flee": { "perLevel": 1, "perDex": 0.4 },
+    "critRate": { "base": 5, "perDex": 0.1 },
+    "critDmg": { "base": 150 },
+    "spd": { "base": 100, "perDex": 0.5 },
+    "maxEnergy": { "base": 100, "perInt": 0.5 }
+  },
+  "progression": { "expBase": 50, "expExponent": 1.8, "statPointsPerLevel": 4, "maxJobLevel": 100 },
+  "monsterGen": {
+    "hp": { "base": 50, "perLevel": 35 }, "atk": { "base": 10, "perLevel": 3.5 },
+    "def": { "perLevel": 1.2 }, "hit": { "base": 75, "perLevel": 1 }, "flee": { "perLevel": 0.8 },
+    "exp": { "base": 20, "perLevel": 4 }, "gold": { "base": 10, "perLevel": 2 },
+    "archetypes": {
+      "bruiser": { "hpMod": 1.1, "atkMod": 1.0, "defMod": 1.0, "spd": 90, "attackStat": "PATK" },
+      "tank":    { "hpMod": 1.5, "atkMod": 0.8, "defMod": 1.6, "spd": 80, "attackStat": "PATK" },
+      "swift":   { "hpMod": 0.8, "atkMod": 0.9, "defMod": 0.8, "spd": 115, "attackStat": "PATK" },
+      "caster":  { "hpMod": 0.85, "atkMod": 1.15, "defMod": 0.9, "spd": 95, "attackStat": "MATK" },
+      "pest":    { "hpMod": 0.7, "atkMod": 0.8, "defMod": 0.8, "spd": 105, "attackStat": "PATK" }
+    }
+  },
+  "battle": { "groupSizeWeights": [0.5, 0.3, 0.2], "equipDropChance": 0.08 },
+  "rarity": {
+    "order": ["common", "uncommon", "rare", "epic", "legendary"],
+    "statMult": { "common": 1.0, "uncommon": 1.2, "rare": 1.5, "epic": 1.9, "legendary": 2.4 }
+  }
+}

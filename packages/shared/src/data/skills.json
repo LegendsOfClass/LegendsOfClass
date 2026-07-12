@@ -1,0 +1,9 @@
+{
+  "normal.physical": { "id": "normal.physical", "job": "*", "unlockLevel": 1, "kind": "normal", "school": "physical", "governingStat": "PATK", "multiplier": 1.0, "hits": 1, "cooldown": 0, "targeting": "lowestHpEnemy", "castCondition": "always" },
+  "normal.magic":    { "id": "normal.magic", "job": "*", "unlockLevel": 1, "kind": "normal", "school": "magic", "governingStat": "MATK", "multiplier": 1.0, "hits": 1, "cooldown": 0, "targeting": "lowestHpEnemy", "castCondition": "always" },
+  "swordman.bash":   { "id": "swordman.bash", "job": "swordman", "unlockLevel": 5, "kind": "skill", "school": "physical", "governingStat": "PATK", "multiplier": 1.6, "hits": 1, "cooldown": 30, "targeting": "lowestHpEnemy", "castCondition": "always" },
+  "mage.fire_bolt":  { "id": "mage.fire_bolt", "job": "mage", "unlockLevel": 5, "kind": "skill", "school": "magic", "governingStat": "MATK", "multiplier": 1.7, "hits": 1, "cooldown": 30, "targeting": "lowestHpEnemy", "castCondition": "always" },
+  "novice.first_aid": { "id": "novice.first_aid", "job": "novice", "unlockLevel": 15, "kind": "skill", "school": "heal", "governingStat": "MATK", "multiplier": 1.0, "hits": 1, "cooldown": 60, "targeting": "self", "castCondition": "selfHp<=60" },
+  "monster.bounce":  { "id": "monster.bounce", "job": "monster", "unlockLevel": 1, "kind": "skill", "school": "physical", "governingStat": "PATK", "multiplier": 1.2, "hits": 1, "cooldown": 70, "targeting": "lowestHpEnemy", "castCondition": "always" },
+  "monster.charge":  { "id": "monster.charge", "job": "monster", "unlockLevel": 1, "kind": "skill", "school": "physical", "governingStat": "PATK", "multiplier": 1.6, "hits": 1, "cooldown": 80, "targeting": "lowestHpEnemy", "castCondition": "always" }
+}

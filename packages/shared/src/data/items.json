@@ -1,0 +1,5 @@
+{
+  "training_sword":   { "id": "training_sword", "nameKey": "item.training_sword", "slot": "weapon", "stats": { "patk": 12 }, "sourceMaps": ["grassland"] },
+  "apprentice_staff": { "id": "apprentice_staff", "nameKey": "item.apprentice_staff", "slot": "weapon", "stats": { "matk": 12 }, "sourceMaps": ["grassland"] },
+  "squires_armor":    { "id": "squires_armor", "nameKey": "item.squires_armor", "slot": "armor", "stats": { "def": 6, "hp": 45 }, "sourceMaps": ["grassland"] }
+}

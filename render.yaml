@@ -1,0 +1,18 @@
+# Render Blueprint — สร้างบริการอัตโนมัติเมื่อกด New → Blueprint
+services:
+  - type: web
+    name: legends-of-class-evolution
+    runtime: node
+    plan: free
+    buildCommand: npm install --include=dev && npm run build -w @loce/shared && npm run build -w @loce/client
+    startCommand: npm run start:prod
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: SERVE_CLIENT
+        value: "true"
+      - key: JWT_SECRET
+        generateValue: true
+      - key: DATABASE_URL
+        sync: false   # Render จะถามให้วางค่าจาก Neon ตอนสร้าง
