@@ -54,5 +54,29 @@
   "archetype": "bruiser",
   "signatureSkill": "monster.mug",
   "map": "whisperwood"
+ },
+ "fluffbit": {
+  "id": "fluffbit",
+  "nameKey": "mon.fluffbit",
+  "level": 5,
+  "archetype": "pest",
+  "signatureSkill": null,
+  "map": "grassland"
+ },
+ "sporeling": {
+  "id": "sporeling",
+  "nameKey": "mon.sporeling",
+  "level": 11,
+  "archetype": "caster",
+  "signatureSkill": "monster.spore_puff",
+  "map": "grassland"
+ },
+ "plains_wolf": {
+  "id": "plains_wolf",
+  "nameKey": "mon.plains_wolf",
+  "level": 14,
+  "archetype": "swift",
+  "signatureSkill": "monster.rend",
+  "map": "grassland"
  }
 }

@@ -89,6 +89,9 @@ export function SkillsPanel({ onClose, showErr }: { onClose: () => void; showErr
           P{i + 1}: {skillMeta(SKILLS[id])}
         </div>
       ) : null)}
+      <div style={{ fontSize: 11, opacity: .75, textAlign: 'left', marginTop: 6, padding: '6px 8px', background: 'rgba(0,0,0,.25)', borderRadius: 6 }}>
+        🗡 <b>{t('ui.skills.normal')}</b> — {t('ui.skills.normalNote')}
+      </div>
 
       <div style={{ marginTop: 10, paddingTop: 8, borderTop: '1px solid #444', fontSize: 12, textAlign: 'left', lineHeight: 1.8 }}>
         <div>🛡 <b>{t('ui.skills.passive')}:</b> {passive ? t(`skill.${passive.id}`) : '—'}{' '}
@@ -102,7 +105,45 @@ export function SkillsPanel({ onClose, showErr }: { onClose: () => void; showErr
       </div>
 
       <button disabled={busy} onClick={save}>{saved ? '✓ ' + t('ui.skills.saved') : t('ui.skills.save')}</button>
+
+      <SkillBook unlocked={unlocked} currentJob={job.job_id} currentLevel={job.level} />
+
       <button onClick={onClose}>{t('ui.common.close')}</button>
+    </div>
+  );
+}
+
+/** Full per-job skill reference: what exists, at what level, and what you already own. */
+function SkillBook({ unlocked, currentJob, currentLevel }: { unlocked: string[]; currentJob: string; currentLevel: number }) {
+  const [tab, setTab] = useState(currentJob);
+  const kindIcon: Record<string, string> = { skill: '⚔️', passive: '🛡', ultimate: '💥' };
+  const list = Object.values(SKILLS)
+    .filter(s => s.job === tab && s.kind !== 'normal')
+    .sort((a, b) => a.unlockLevel - b.unlockLevel);
+  return (
+    <div style={{ marginTop: 10, paddingTop: 8, borderTop: '1px solid #444' }}>
+      <div style={{ fontSize: 13, marginBottom: 6 }}>📖 <b>{t('ui.skills.book')}</b></div>
+      <div style={{ display: 'flex', gap: 4, justifyContent: 'center', marginBottom: 6, flexWrap: 'wrap' }}>
+        {Object.values(JOBS).map(jb => (
+          <button key={jb.id} className="small"
+            style={{ background: tab === jb.id ? '#3a5aad' : undefined }}
+            onClick={() => setTab(jb.id)}>{t(jb.nameKey)}</button>
+        ))}
+      </div>
+      <div style={{ textAlign: 'left', fontSize: 12, lineHeight: 1.9, maxHeight: 170, overflowY: 'auto' }}>
+        {list.map(s => {
+          const owned = unlocked.includes(s.id);
+          const usable = owned && (s.job !== tab || tab !== currentJob || s.unlockLevel <= currentLevel);
+          return (
+            <div key={s.id} style={{ opacity: owned ? 1 : .55 }}>
+              {kindIcon[s.kind]} Lv.{s.unlockLevel} — {t(`skill.${s.id}`)}{' '}
+              <small style={{ opacity: .7 }}>[{t(`ui.skills.type.${s.kind}`)}]</small>{' '}
+              {owned ? <span style={{ color: '#8de29a' }}>✓</span> : '🔒'}
+              {owned && !usable ? null : null}
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }

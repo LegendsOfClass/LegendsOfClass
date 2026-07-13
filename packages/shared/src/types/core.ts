@@ -115,7 +115,7 @@ export interface MonsterDef {
   nameKey: string;
   level: number;
   archetype: string;
-  signatureSkill: string;
+  signatureSkill: string | null;
   map: string;
 }
 

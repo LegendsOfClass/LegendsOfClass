@@ -174,5 +174,21 @@
   "error.priority.locked": "สกิลนี้ยังไม่ปลดล็อก",
   "error.priority.levelTooLow": "เลเวลอาชีพยังไม่ถึง",
   "error.priority.p1OwnJob": "P1 ต้องเป็นสกิลของอาชีพปัจจุบัน",
-  "error.priority.duplicate": "ใส่สกิลซ้ำกันไม่ได้"
+  "error.priority.duplicate": "ใส่สกิลซ้ำกันไม่ได้",
+  "mon.fluffbit": "กระต่ายฟลัฟฟ์",
+  "mon.sporeling": "เห็ดสปอร์น้อย",
+  "mon.plains_wolf": "หมาป่าทุ่ง",
+  "ui.hud.map": "แมพ",
+  "ui.travel.title": "แผนที่โลก",
+  "ui.travel.here": "คุณอยู่ที่นี่",
+  "ui.travel.go": "วาร์ป",
+  "ui.travel.town.desc": "เขตปลอดภัย — เปลี่ยนอาชีพ พบผู้เล่น",
+  "ui.travel.lv": "Lv",
+  "ui.skills.normal": "โจมตีปกติ (Normal Attack)",
+  "ui.skills.normalNote": "Lv.1 · ใช้ได้ตลอด — ระบบจะใช้ท่านี้เมื่อสกิล P1–P4 ยังไม่พร้อม",
+  "ui.skills.book": "สมุดสกิล",
+  "ui.skills.unlocked": "ปลดแล้ว",
+  "ui.skills.type.skill": "สกิลใช้งาน",
+  "ui.skills.type.passive": "ติดตัว",
+  "ui.skills.type.ultimate": "ท่าไม้ตาย"
 }

@@ -22,8 +22,20 @@
     "monsterId": "green_slime"
    },
    {
+    "id": "grassland-fluffbit",
+    "monsterId": "fluffbit"
+   },
+   {
     "id": "grassland-boar",
     "monsterId": "wild_boar"
+   },
+   {
+    "id": "grassland-sporeling",
+    "monsterId": "sporeling"
+   },
+   {
+    "id": "grassland-wolf",
+    "monsterId": "plains_wolf"
    }
   ]
  },

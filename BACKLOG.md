@@ -9,7 +9,7 @@
 - [M7] Cash shop (mock), full i18n pass, security hardening, client code-splitting/perf
 
 ## Art asset gaps (waiting on owner's image generator)
-- **Hornet sprite** (map 2 monster) — not present in the Monster Bible sheet; placeholder in use
+- **Hornet sprite** (map 2 monster) — original static placeholder in use; replace when real art arrives
 - **Wild Boar art** — Monster Bible tile labeled "Wild Boar" is a mushroom creature; using as-is until replacement PNG arrives (drop-in swap, no code change)
 - Gate / town props art, Field background tiles — placeholders in use
 - M3+: Archer/Healer sprites (exist in Job Bible, cut when M3 starts); skill/VFX atlas from VFX Bible; UI skin from UI Bible; equipment icons from Equipment Bible; card frames from Card Bible

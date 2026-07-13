@@ -28,7 +28,7 @@ export function monsterSnapshot(id: string, instanceNo: number): UnitSnapshot {
     flee: Math.floor(MG.flee.perLevel * L),
     critRate: 5, critDmg: 150, spd: arch.spd,
     maxEnergy: 100, normalAttackStat: attackStat,
-    prioritySkills: [def.signatureSkill, null, null, null],
+    prioritySkills: [def.signatureSkill ?? null, null, null, null],
     ultimateSkill: null,
   };
 }

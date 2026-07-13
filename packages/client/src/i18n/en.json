@@ -174,5 +174,21 @@
   "error.priority.locked": "Skill not unlocked",
   "error.priority.levelTooLow": "Job level too low for this skill",
   "error.priority.p1OwnJob": "P1 must be a skill of your current job",
-  "error.priority.duplicate": "Duplicate skill in slots"
+  "error.priority.duplicate": "Duplicate skill in slots",
+  "mon.fluffbit": "Fluffbit",
+  "mon.sporeling": "Sporeling",
+  "mon.plains_wolf": "Plains Wolf",
+  "ui.hud.map": "Map",
+  "ui.travel.title": "World Map",
+  "ui.travel.here": "You are here",
+  "ui.travel.go": "Warp",
+  "ui.travel.town.desc": "Safe zone — switch jobs, meet players",
+  "ui.travel.lv": "Lv",
+  "ui.skills.normal": "Normal Attack",
+  "ui.skills.normalNote": "Lv.1 · always available — used when no priority skill is ready",
+  "ui.skills.book": "Skill Book",
+  "ui.skills.unlocked": "unlocked",
+  "ui.skills.type.skill": "Active",
+  "ui.skills.type.passive": "Passive",
+  "ui.skills.type.ultimate": "Ultimate"
 }

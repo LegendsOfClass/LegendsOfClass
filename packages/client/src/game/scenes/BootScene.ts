@@ -15,6 +15,10 @@ const SPRITES: [string, string][] = [
   ['unit.poison_toad', 'sprites/poison_toad.png'],
   ['unit.treant_sapling', 'sprites/treant_sapling.png'],
   ['unit.bandit_scout', 'sprites/bandit_scout.png'],
+  ['unit.fluffbit', 'sprites/fluffbit.png'],
+  ['unit.sporeling', 'sprites/sporeling.png'],
+  ['unit.plains_wolf', 'sprites/plains_wolf.png'],
+  ['unit.hornet', 'sprites/hornet.png'],
   ['prop.jobmaster', 'sprites/jobmaster.png'],
   ['ui.logo', 'sprites/logo.png'],
 ];
