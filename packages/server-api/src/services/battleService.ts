@@ -20,6 +20,33 @@ function weightedPick<T extends string>(weights: Record<T, number>): T {
   return entries[entries.length - 1][0];
 }
 
+/** Is this priority layout legal for the given job right now? (docs/01-combat/05) */
+export function validatePriority(slots: (string | null)[], jobId: string, level: number, skillsUnlocked: string[]): string | null {
+  if (!Array.isArray(slots) || slots.length !== 4) return 'error.priority.shape';
+  const seen = new Set<string>();
+  for (let i = 0; i < 4; i++) {
+    const id = slots[i];
+    if (id === null) continue;
+    const sk = SKILLS[id];
+    if (!sk || sk.kind !== 'skill') return 'error.priority.notActive';
+    if (!skillsUnlocked.includes(id)) return 'error.priority.locked';
+    if (sk.job === jobId && sk.unlockLevel > level) return 'error.priority.levelTooLow';
+    if (i === 0 && sk.job !== jobId) return 'error.priority.p1OwnJob'; // D-006
+    if (seen.has(id)) return 'error.priority.duplicate';
+    seen.add(id);
+  }
+  return null;
+}
+
+/** Auto-fill fallback: own-job unlocked actives in unlock order (used when a player has not configured slots). */
+export function autoPriority(jobRow: JobRow, skillsUnlocked: string[]): (string | null)[] {
+  const own = skillsUnlocked
+    .filter((id) => SKILLS[id]?.job === jobRow.job_id && SKILLS[id].kind === 'skill' && SKILLS[id].unlockLevel <= jobRow.level)
+    .sort((a, b) => SKILLS[a].unlockLevel - SKILLS[b].unlockLevel)
+    .slice(0, 4);
+  return [own[0] ?? null, own[1] ?? null, own[2] ?? null, own[3] ?? null];
+}
+
 export function buildPlayerSnapshot(
   jobRow: JobRow, items: ItemRow[], skillsUnlocked: string[], displayName: string, god = false,
 ): UnitSnapshot {
@@ -28,18 +55,40 @@ export function buildPlayerSnapshot(
   const gear = gearBonusFor(items, RARITY.statMult);
   const d = computeDerived(primary, jobRow.level, gear);
   if (god) { d.patk *= 100; d.matk *= 100; d.maxHp *= 100; d.def *= 100; } // Dev Mode only
-  // M1 auto-priority: own-job unlocked skills fill slots in unlock order (P1 own-job rule holds
-  // trivially — full player-configured builder arrives in M3 per plan).
-  const ownSkills = skillsUnlocked
-    .filter((id) => SKILLS[id]?.job === jobRow.job_id && SKILLS[id].kind === 'skill' && SKILLS[id].unlockLevel <= jobRow.level)
-    .sort((a, b) => SKILLS[a].unlockLevel - SKILLS[b].unlockLevel)
-    .slice(0, 4);
-  const priority: (string | null)[] = [ownSkills[0] ?? null, ownSkills[1] ?? null, ownSkills[2] ?? null, ownSkills[3] ?? null];
+
+  // Passives: data-driven from skills.json (unlocked + level met + own job)
+  let healingPct = 0;
+  for (const id of skillsUnlocked) {
+    const sk = SKILLS[id];
+    if (!sk || sk.kind !== 'passive' || sk.job !== jobRow.job_id || sk.unlockLevel > jobRow.level) continue;
+    for (const e of sk.effects ?? []) {
+      if (e.type === 'statMod') {
+        const key = e.stat as keyof typeof d;
+        if (typeof d[key] === 'number') {
+          (d as unknown as Record<string, number>)[key] = Math.floor(((d as unknown as Record<string, number>)[key] + (e.flat ?? 0)) * (1 + (e.pct ?? 0) / 100));
+        }
+      } else if (e.type === 'healingDealtPct') {
+        healingPct += e.value / 100;
+      }
+    }
+  }
+
+  // Ultimate: own-job ultimate, unlocked + level met
+  const ult = Object.values(SKILLS).find(
+    (sk) => sk.kind === 'ultimate' && sk.job === jobRow.job_id && sk.unlockLevel <= jobRow.level && skillsUnlocked.includes(sk.id),
+  );
+
+  // Priority: player-configured slots if legal, else auto-fill (docs/01-combat/05)
+  let priority = jobRow.priority_slots ?? [null, null, null, null];
+  const problem = validatePriority(priority, jobRow.job_id, jobRow.level, skillsUnlocked);
+  const empty = priority.every((x) => x === null);
+  if (problem || empty) priority = autoPriority(jobRow, skillsUnlocked);
+
   return {
     id: 'player', nameKey: displayName, side: 0, level: jobRow.level,
     maxHp: d.maxHp, patk: d.patk, matk: d.matk, def: d.def, hit: d.hit, flee: d.flee,
     critRate: d.critRate, critDmg: d.critDmg, spd: d.spd, maxEnergy: d.maxEnergy,
-    normalAttackStat: job.normalAttackStat, prioritySkills: priority, ultimateSkill: null,
+    normalAttackStat: job.normalAttackStat, healingPct, prioritySkills: priority, ultimateSkill: ult?.id ?? null,
   };
 }
 

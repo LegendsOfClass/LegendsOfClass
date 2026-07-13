@@ -1,9 +1,64 @@
 {
-  "town":      { "id": "town", "nameKey": "map.town", "kind": "town", "nodes": [] },
-  "grassland": { "id": "grassland", "nameKey": "map.grassland", "kind": "field",
-    "rarityWeights": { "common": 64, "uncommon": 25, "rare": 8, "epic": 2.7, "legendary": 0.3 },
-    "nodes": [
-      { "id": "grassland-slime", "monsterId": "green_slime" },
-      { "id": "grassland-boar",  "monsterId": "wild_boar" }
-    ] }
+ "town": {
+  "id": "town",
+  "nameKey": "map.town",
+  "kind": "town",
+  "nodes": []
+ },
+ "grassland": {
+  "id": "grassland",
+  "nameKey": "map.grassland",
+  "kind": "field",
+  "rarityWeights": {
+   "common": 64,
+   "uncommon": 25,
+   "rare": 8,
+   "epic": 2.7,
+   "legendary": 0.3
+  },
+  "nodes": [
+   {
+    "id": "grassland-slime",
+    "monsterId": "green_slime"
+   },
+   {
+    "id": "grassland-boar",
+    "monsterId": "wild_boar"
+   }
+  ]
+ },
+ "whisperwood": {
+  "id": "whisperwood",
+  "nameKey": "map.whisperwood",
+  "kind": "field",
+  "rarityWeights": {
+   "common": 59,
+   "uncommon": 25,
+   "rare": 10,
+   "epic": 5,
+   "legendary": 1
+  },
+  "nodes": [
+   {
+    "id": "ww-spider",
+    "monsterId": "forest_spider"
+   },
+   {
+    "id": "ww-toad",
+    "monsterId": "poison_toad"
+   },
+   {
+    "id": "ww-treant",
+    "monsterId": "treant_sapling"
+   },
+   {
+    "id": "ww-hornet",
+    "monsterId": "hornet"
+   },
+   {
+    "id": "ww-bandit",
+    "monsterId": "bandit_scout"
+   }
+  ]
+ }
 }

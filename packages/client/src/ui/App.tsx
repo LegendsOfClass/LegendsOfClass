@@ -9,9 +9,10 @@ import {
 import { JOBS, ITEMS, GAME, type BattleResponse } from '@loce/shared';
 import { DevPanel } from './DevPanel';
 import { ChatBox } from './ChatBox';
+import { SkillsPanel } from './SkillsPanel';
 import { initRealtime, rtLeave, rtRefresh } from '../net/realtime';
 
-type PanelId = 'none' | 'jobs' | 'character' | 'bag' | 'dev' | 'loot';
+type PanelId = 'none' | 'jobs' | 'character' | 'bag' | 'skills' | 'dev' | 'loot';
 
 export function App() {
   const [, force] = useState(0);
@@ -116,6 +117,7 @@ export function App() {
       <div className="hud">
         <button onClick={() => setPanel('character')}>{t('ui.hud.character')}</button>
         <button onClick={() => setPanel('bag')}>{t('ui.hud.bag')}</button>
+        <button onClick={() => setPanel('skills')}>{t('ui.hud.skills')}</button>
         <button onClick={() => setPanel('jobs')}>{t('ui.hud.jobs')}</button>
         {profile?.state.current_map !== 'town' &&
           <button onClick={() => travel('town')}>{t('ui.field.return')}</button>}
@@ -129,6 +131,7 @@ export function App() {
       {panel === 'character' && <CharacterPanel onClose={() => setPanel('none')} showErr={showErr} />}
       {panel === 'bag' && <BagPanel onClose={() => setPanel('none')} showErr={showErr} />}
       {panel === 'jobs' && <JobsPanel onClose={() => setPanel('none')} showErr={showErr} />}
+      {panel === 'skills' && <SkillsPanel onClose={() => setPanel('none')} showErr={showErr} />}
       {panel === 'dev' && import.meta.env.DEV && <DevPanel onClose={() => setPanel('none')} showErr={showErr} />}
       {panel === 'loot' && loot && <LootPanel resp={loot} onClose={() => setPanel('none')} onRepeat={() => { setPanel('none'); }} />}
       {showGuide && (

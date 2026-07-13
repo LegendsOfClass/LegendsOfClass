@@ -6,6 +6,7 @@ import { JOBS, ITEMS, GAME, computeDerived, expToNext, type PrimaryStats, type G
 export interface JobRow {
   job_id: string; level: number; exp: number; rebirth_count: number;
   stat_str: number; stat_dex: number; stat_con: number; stat_int: number; unspent_points: number;
+  priority_slots: (string | null)[];
 }
 export interface ItemRow { id: number; item_id: string; rarity: string; enhance_level: number; equipped_slot: string | null; }
 export interface Profile {
@@ -30,7 +31,7 @@ export function primaryStats(j: JobRow): PrimaryStats {
 
 /** Mirrors server gearBonusFor (same config, same math) so the character sheet matches battles. */
 export function clientGearBonus(items: ItemRow[]): GearBonus {
-  const total: Required<GearBonus> = { patk: 0, matk: 0, def: 0, hp: 0, spd: 0 };
+  const total: Required<GearBonus> = { patk: 0, matk: 0, def: 0, hp: 0, spd: 0, critRate: 0 };
   const rmult = GAME.rarity.statMult as Record<string, number>;
   for (const it of items) {
     if (!it.equipped_slot) continue;
@@ -41,6 +42,7 @@ export function clientGearBonus(items: ItemRow[]): GearBonus {
     total.def  += Math.floor((def.stats.def  ?? 0) * m);
     total.hp   += Math.floor((def.stats.hp   ?? 0) * m);
     total.spd  += Math.floor((def.stats.spd  ?? 0) * m);
+    total.critRate += Math.floor((def.stats.critRate ?? 0) * m);
   }
   return total;
 }

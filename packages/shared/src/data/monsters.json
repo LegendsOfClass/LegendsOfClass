@@ -1,4 +1,58 @@
 {
-  "green_slime": { "id": "green_slime", "nameKey": "mon.green_slime", "level": 2, "archetype": "tank", "signatureSkill": "monster.bounce", "map": "grassland" },
-  "wild_boar":   { "id": "wild_boar", "nameKey": "mon.wild_boar", "level": 8, "archetype": "bruiser", "signatureSkill": "monster.charge", "map": "grassland" }
+ "green_slime": {
+  "id": "green_slime",
+  "nameKey": "mon.green_slime",
+  "level": 2,
+  "archetype": "tank",
+  "signatureSkill": "monster.bounce",
+  "map": "grassland"
+ },
+ "wild_boar": {
+  "id": "wild_boar",
+  "nameKey": "mon.wild_boar",
+  "level": 8,
+  "archetype": "bruiser",
+  "signatureSkill": "monster.charge",
+  "map": "grassland"
+ },
+ "forest_spider": {
+  "id": "forest_spider",
+  "nameKey": "mon.forest_spider",
+  "level": 17,
+  "archetype": "swift",
+  "signatureSkill": "monster.venom_bite",
+  "map": "whisperwood"
+ },
+ "poison_toad": {
+  "id": "poison_toad",
+  "nameKey": "mon.poison_toad",
+  "level": 21,
+  "archetype": "tank",
+  "signatureSkill": "monster.toxic_spit",
+  "map": "whisperwood"
+ },
+ "treant_sapling": {
+  "id": "treant_sapling",
+  "nameKey": "mon.treant_sapling",
+  "level": 25,
+  "archetype": "tank",
+  "signatureSkill": "monster.root_slam",
+  "map": "whisperwood"
+ },
+ "hornet": {
+  "id": "hornet",
+  "nameKey": "mon.hornet",
+  "level": 29,
+  "archetype": "pest",
+  "signatureSkill": "monster.sting",
+  "map": "whisperwood"
+ },
+ "bandit_scout": {
+  "id": "bandit_scout",
+  "nameKey": "mon.bandit_scout",
+  "level": 33,
+  "archetype": "bruiser",
+  "signatureSkill": "monster.mug",
+  "map": "whisperwood"
+ }
 }

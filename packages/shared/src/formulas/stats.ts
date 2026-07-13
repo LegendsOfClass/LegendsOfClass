@@ -22,7 +22,7 @@ export function computeDerived(
     def: Math.floor((primary.con * SC.def.perCon + g(gear.def)) * mul),
     hit: Math.floor(SC.hitAttr.base + primary.dex * SC.hitAttr.perDex),
     flee: Math.floor(level * SC.flee.perLevel + primary.dex * SC.flee.perDex),
-    critRate: Math.min(gameData.combat.critRateCap, SC.critRate.base + primary.dex * SC.critRate.perDex),
+    critRate: Math.min(gameData.combat.critRateCap, SC.critRate.base + primary.dex * SC.critRate.perDex) + g(gear.critRate),
     critDmg: SC.critDmg.base,
     spd: Math.floor(SC.spd.base + primary.dex * SC.spd.perDex + g(gear.spd)),
     maxEnergy: Math.floor(SC.maxEnergy.base + primary.int * SC.maxEnergy.perInt),

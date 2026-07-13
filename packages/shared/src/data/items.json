@@ -1,5 +1,95 @@
 {
-  "training_sword":   { "id": "training_sword", "nameKey": "item.training_sword", "slot": "weapon", "stats": { "patk": 12 }, "sourceMaps": ["grassland"] },
-  "apprentice_staff": { "id": "apprentice_staff", "nameKey": "item.apprentice_staff", "slot": "weapon", "stats": { "matk": 12 }, "sourceMaps": ["grassland"] },
-  "squires_armor":    { "id": "squires_armor", "nameKey": "item.squires_armor", "slot": "armor", "stats": { "def": 6, "hp": 45 }, "sourceMaps": ["grassland"] }
+ "training_sword": {
+  "id": "training_sword",
+  "nameKey": "item.training_sword",
+  "slot": "weapon",
+  "stats": {
+   "patk": 12
+  },
+  "sourceMaps": [
+   "grassland"
+  ]
+ },
+ "apprentice_staff": {
+  "id": "apprentice_staff",
+  "nameKey": "item.apprentice_staff",
+  "slot": "weapon",
+  "stats": {
+   "matk": 12
+  },
+  "sourceMaps": [
+   "grassland"
+  ]
+ },
+ "squires_armor": {
+  "id": "squires_armor",
+  "nameKey": "item.squires_armor",
+  "slot": "armor",
+  "stats": {
+   "def": 6,
+   "hp": 45
+  },
+  "sourceMaps": [
+   "grassland",
+   "whisperwood"
+  ]
+ },
+ "short_bow": {
+  "id": "short_bow",
+  "nameKey": "item.short_bow",
+  "slot": "weapon",
+  "stats": {
+   "patk": 10,
+   "spd": 3
+  },
+  "sourceMaps": [
+   "grassland"
+  ]
+ },
+ "oak_rod": {
+  "id": "oak_rod",
+  "nameKey": "item.oak_rod",
+  "slot": "weapon",
+  "stats": {
+   "matk": 10,
+   "hp": 40
+  },
+  "sourceMaps": [
+   "grassland"
+  ]
+ },
+ "knights_blade": {
+  "id": "knights_blade",
+  "nameKey": "item.knights_blade",
+  "slot": "weapon",
+  "stats": {
+   "patk": 26
+  },
+  "sourceMaps": [
+   "whisperwood"
+  ]
+ },
+ "runed_staff": {
+  "id": "runed_staff",
+  "nameKey": "item.runed_staff",
+  "slot": "weapon",
+  "stats": {
+   "matk": 26
+  },
+  "sourceMaps": [
+   "whisperwood"
+  ]
+ },
+ "hunters_longbow": {
+  "id": "hunters_longbow",
+  "nameKey": "item.hunters_longbow",
+  "slot": "weapon",
+  "stats": {
+   "patk": 22,
+   "critRate": 2
+  },
+  "sourceMaps": [
+   "whisperwood"
+  ]
+ }
 }

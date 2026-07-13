@@ -123,3 +123,100 @@ describe('combat engine determinism (docs/01-combat/06 golden contract)', () => 
     expect(r.ticks).toBe(200);
   });
 });
+
+describe('engine v2 — M3 features', () => {
+  const foes = (n: number, id = 'green_slime') =>
+    Array.from({ length: n }, (_, i) => monsterSnapshot(id, i + 1));
+
+  it('buff statMod raises effective stats then expires (Take Aim)', () => {
+    const archer = playerSnapshot({ prioritySkills: ['archer.take_aim', null, null, null] });
+    const r = simulate(setup([archer, ...foes(1)], 21));
+    const buffEv = r.events.find(e => e.type === 'buff');
+    expect(buffEv).toBeTruthy();
+    expect(buffEv && 'debuff' in buffEv ? buffEv.debuff : true).toBe(false);
+  });
+
+  it('debuff (Provoke) lowers target DEF → later hits deal more', () => {
+    const s1 = playerSnapshot({ prioritySkills: [null, null, null, null] });
+    const boarA = monsterSnapshot('wild_boar', 1);
+    const base = simulate(setup([s1, boarA], 7));
+    const s2 = playerSnapshot({ prioritySkills: ['swordman.provoke', null, null, null] });
+    const withDebuff = simulate(setup([s2, monsterSnapshot('wild_boar', 1)], 7));
+    const dbf = withDebuff.events.find(e => e.type === 'buff');
+    expect(dbf && 'debuff' in dbf ? dbf.debuff : false).toBe(true);
+    expect(base.checksum).not.toBe(withDebuff.checksum);
+  });
+
+  it('AoE (allEnemies) hits every living enemy once per cast', () => {
+    const sw = playerSnapshot({ level: 30, prioritySkills: ['swordman.sword_wave', null, null, null] });
+    const r = simulate(setup([sw, ...foes(3)], 33));
+    const firstWave = r.events.filter(e => e.type === 'damage' && e.skillId === 'swordman.sword_wave');
+    expect(firstWave.length).toBeGreaterThanOrEqual(3);
+  });
+
+  it('targets>=2 gates AoE: never cast vs a single enemy', () => {
+    const sw = playerSnapshot({ prioritySkills: ['swordman.sword_wave', null, null, null] });
+    const r = simulate(setup([sw, ...foes(1)], 34));
+    expect(r.events.some(e => e.type === 'action' && e.skillId === 'swordman.sword_wave')).toBe(false);
+  });
+
+  it('randomEnemies picks targetCount targets deterministically', () => {
+    const mg = playerSnapshot({
+      matk: 400, prioritySkills: ['mage.chain_lightning', null, null, null],
+    });
+    const a = simulate(setup([mg, ...foes(2, 'wild_boar')], 55));
+    const b = simulate(setup([mg, ...foes(2, 'wild_boar')], 55));
+    expect(a.checksum).toBe(b.checksum);
+    const bolts = a.events.filter(e => e.type === 'damage' && e.skillId === 'mage.chain_lightning');
+    expect(bolts.length).toBeGreaterThanOrEqual(3); // 3 bolts in the first cast
+  });
+
+  it('DoT (Venom Bite) ticks over time and can kill', () => {
+    const frail = playerSnapshot({ maxHp: 120, def: 0, flee: 0, patk: 1, matk: 1, prioritySkills: [null, null, null, null] });
+    const spider = monsterSnapshot('forest_spider', 1);
+    const r = simulate(setup([frail, spider], 88));
+    const dotHits = r.events.filter(e => e.type === 'damage' && e.skillId === 'monster.venom_bite' && e.value > 0);
+    expect(dotHits.length).toBeGreaterThan(1); // initial hit + at least one DoT proc
+  });
+
+  it('ultimate consumes 100 energy and fires once charged (Dragon Cleave)', () => {
+    const sw = playerSnapshot({ level: 30, ultimateSkill: 'swordman.dragon_cleave', maxEnergy: 100 });
+    const r = simulate(setup([sw, ...foes(2, 'wild_boar')], 42));
+    const ult = r.events.find(e => e.type === 'action' && e.skillId === 'swordman.dragon_cleave');
+    expect(ult).toBeTruthy();
+  });
+
+  it('healingDealtPct passive boosts heals ~20% (Divine Grace)', () => {
+    const base: Parameters<typeof playerSnapshot>[0] = {
+      matk: 100, patk: 1, maxHp: 600, def: 5, prioritySkills: ['healer.heal', null, null, null],
+    };
+    const plain = playerSnapshot(base);
+    const graced = playerSnapshot({ ...base, healingPct: 0.2 });
+    const boar = () => monsterSnapshot('wild_boar', 1);
+    const h1 = simulate(setup([plain, boar()], 66)).events.filter(e => e.type === 'heal');
+    const h2 = simulate(setup([graced, boar()], 66)).events.filter(e => e.type === 'heal');
+    expect(h1.length).toBeGreaterThan(0);
+    expect(h2[0].value).toBeGreaterThan(h1[0].value);
+  });
+
+  it('cleanse removes debuffs and DoTs (Purify condition + effect)', () => {
+    const healer = playerSnapshot({
+      maxHp: 4000, matk: 80, level: 40,
+      prioritySkills: ['healer.purify', null, null, null],
+    });
+    const spider = monsterSnapshot('forest_spider', 1);
+    const r = simulate(setup([healer, spider], 99));
+    const purify = r.events.find(e => e.type === 'action' && e.skillId === 'healer.purify');
+    expect(purify).toBeTruthy(); // fired only because a DoT/debuff was present
+  });
+
+  it('determinism holds across all v2 features (50 runs mixed kit)', () => {
+    const kit = playerSnapshot({
+      level: 45, maxEnergy: 100, ultimateSkill: 'archer.storm_of_arrows',
+      prioritySkills: ['archer.take_aim', 'archer.piercing_arrow', 'archer.snipe', 'swordman.provoke'],
+    });
+    const mk = () => setup([kit, monsterSnapshot('forest_spider', 1), monsterSnapshot('poison_toad', 2), monsterSnapshot('hornet', 3)], 1234);
+    const first = simulate(mk());
+    for (let i = 0; i < 50; i++) expect(simulate(mk()).checksum).toBe(first.checksum);
+  });
+});

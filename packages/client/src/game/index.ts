@@ -20,7 +20,9 @@ export function startGame(parent: HTMLElement) {
   });
 
   EventBus.on('goto-map', (mapId: string) => {
-    switchTo(mapId === 'town' ? 'Town' : 'Field');
+    stopAll();
+    if (mapId === 'town') game!.scene.start('Town');
+    else game!.scene.start('Field', { mapId });
   });
   EventBus.on('start-battle-replay', (resp: BattleResponse) => {
     stopAll();
@@ -33,8 +35,4 @@ function stopAll() {
   for (const key of ['Town', 'Field', 'Battle']) {
     if (game!.scene.isActive(key) || game!.scene.isPaused(key)) game!.scene.stop(key);
   }
-}
-function switchTo(key: 'Town' | 'Field') {
-  stopAll();
-  game!.scene.start(key);
 }

@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { tx } from '../db/pool.js';
 import { JOBS, GAME, SKILLS } from '@loce/shared';
 import { grantSkillUnlocks, type JobRow } from '../services/accountService.js';
+import { validatePriority } from '../services/battleService.js';
 import { httpError } from '../services/battleService.js';
 
 export async function jobRoutes(app: FastifyInstance) {
@@ -48,9 +49,29 @@ export async function jobRoutes(app: FastifyInstance) {
     });
   });
 
+  /** Configure Priority Slots for the CURRENT job (docs/01-combat/05, D-006). */
+  app.post('/jobs/priority', { onRequest: [app.authenticate] }, async (req) => {
+    const { slots } = z.object({
+      slots: z.array(z.string().max(64).nullable()).length(4),
+    }).parse(req.body);
+    return tx(async (c) => {
+      const state = await c.query('SELECT current_job_id FROM account_state WHERE account_id=$1', [req.user.accountId]);
+      const jobId = state.rows[0].current_job_id;
+      const jobQ = await c.query('SELECT * FROM jobs WHERE account_id=$1 AND job_id=$2 FOR UPDATE', [req.user.accountId, jobId]);
+      const jobRow = jobQ.rows[0] as JobRow;
+      const skillsQ = await c.query('SELECT skill_id FROM skills_unlocked WHERE account_id=$1', [req.user.accountId]);
+      const unlocked = skillsQ.rows.map((r: { skill_id: string }) => r.skill_id);
+      const problem = validatePriority(slots, jobId, jobRow.level, unlocked);
+      if (problem) throw httpError(400, problem);
+      await c.query('UPDATE jobs SET priority_slots=$3 WHERE account_id=$1 AND job_id=$2',
+        [req.user.accountId, jobId, JSON.stringify(slots)]);
+      return { ok: true, slots };
+    });
+  });
+
   /** Travel between maps (M1: town <-> grassland). */
   app.post('/travel', { onRequest: [app.authenticate] }, async (req) => {
-    const { mapId } = z.object({ mapId: z.enum(['town', 'grassland']) }).parse(req.body);
+    const { mapId } = z.object({ mapId: z.enum(['town', 'grassland', 'whisperwood']) }).parse(req.body);
     return tx(async (c) => {
       await c.query('UPDATE account_state SET current_map=$2 WHERE account_id=$1', [req.user.accountId, mapId]);
       return { ok: true, mapId };

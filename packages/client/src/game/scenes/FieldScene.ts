@@ -3,24 +3,34 @@ import { t } from '../../i18n';
 import { MAPS, MONSTERS } from '@loce/shared';
 import { WorldScene } from './WorldScene';
 
-/** Verdant Plains (map id: 'grassland'). Monster nodes are data-driven (Rule 5). */
+/** Generic field map — content is data-driven from maps.json (Rule 5). */
 export class FieldScene extends WorldScene {
   private busy = false;
+  private currentMapId = 'grassland';
 
   constructor() { super('Field'); }
-  protected mapId() { return 'grassland'; }
+  init(data: { mapId?: string }) { this.currentMapId = data?.mapId ?? 'grassland'; }
+  protected mapId() { return this.currentMapId; }
 
   protected createWorld(w: number, h: number) {
     this.busy = false;
-    this.add.rectangle(w / 2, h / 2, w, h, 0x4c6b3c);
+    const palette: Record<string, number> = { grassland: 0x4c6b3c, whisperwood: 0x35513f };
+    this.add.rectangle(w / 2, h / 2, w, h, palette[this.currentMapId] ?? 0x4c6b3c);
     for (let i = 0; i < 24; i++) {
       const x = Math.floor(Math.random() * (w - 40)) + 20, y = Math.floor(Math.random() * (h - 90)) + 60;
-      this.add.rectangle(x, y, 6, 14, 0x3a5530).setAngle(Math.floor(Math.random() * 40) - 20);
+      this.add.rectangle(x, y, 6, 14, 0x2c4030).setAngle(Math.floor(Math.random() * 40) - 20);
     }
-    this.add.text(w / 2, 24, t('map.grassland'), { fontSize: '20px', color: '#fff' }).setOrigin(0.5);
+    const map = MAPS[this.currentMapId];
+    this.add.text(w / 2, 24, t(map.nameKey), { fontSize: '20px', color: '#fff' }).setOrigin(0.5);
 
-    MAPS['grassland'].nodes.forEach((node, i) => {
-      const x = w * (0.3 + i * 0.4), y = h * 0.42;
+    // layout: up to 3 nodes on the first row, the rest on a second row
+    const nodes = map.nodes;
+    nodes.forEach((node, i) => {
+      const row = i < 3 ? 0 : 1;
+      const inRow = row === 0 ? Math.min(nodes.length, 3) : nodes.length - 3;
+      const col = row === 0 ? i : i - 3;
+      const x = w * ((col + 1) / (inRow + 1));
+      const y = h * (0.3 + row * 0.22);
       this.add.sprite(x, y, 'prop.node');
       const mon = MONSTERS[node.monsterId];
       const monSprite = this.add.sprite(x - 30, y, this.unitTex(node.monsterId)).setInteractive({ useHandCursor: true });

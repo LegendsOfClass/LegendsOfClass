@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { EventBus } from '../../EventBus';
 import { t } from '../../i18n';
-import { simulate, type BattleResponse, type BattleEvent, type UnitSnapshot } from '@loce/shared';
+import { simulate, SKILLS, type BattleResponse, type BattleEvent, type UnitSnapshot } from '@loce/shared';
 
 /**
  * Deterministic replay (D-017): the server sends seed + snapshots + checksum,
@@ -99,8 +99,12 @@ export class BattleScene extends Phaser.Scene {
     if (ev.type === 'action') {
       const v = this.views.get(ev.actor);
       if (v) this.tweens.add({ targets: v.sprite, x: v.sprite.x + (v.snap.side === 0 ? 14 : -14), yoyo: true, duration: 110 / this.speed });
+      if (v && SKILLS[ev.skillId]?.kind === 'ultimate') {
+        const flash = this.add.rectangle(this.scale.width / 2, this.scale.height / 2, this.scale.width, this.scale.height, 0xfff2b0, 0.35).setDepth(50);
+        this.tweens.add({ targets: flash, alpha: 0, duration: 420 / this.speed, onComplete: () => flash.destroy() });
+      }
       // consume the effects belonging to this action immediately after
-      while (this.queue.length && (this.queue[0].type === 'damage' || this.queue[0].type === 'heal' || this.queue[0].type === 'death')) {
+      while (this.queue.length && (this.queue[0].type === 'damage' || this.queue[0].type === 'heal' || this.queue[0].type === 'death' || this.queue[0].type === 'buff')) {
         this.applyEffect(this.queue.shift()!);
       }
     } else {
@@ -123,6 +127,12 @@ export class BattleScene extends Phaser.Scene {
       if (!isHeal && !('miss' in ev && ev.miss)) {
         this.tweens.add({ targets: v.sprite, alpha: 0.4, yoyo: true, duration: 80 / this.speed });
       }
+    } else if (ev.type === 'buff') {
+      const v = this.views.get(ev.target); if (!v) return;
+      const txt = ev.debuff ? '⬇' : '⬆';
+      const color = ev.debuff ? '#ff9c9c' : '#9cd7ff';
+      const float = this.add.text(v.sprite.x, v.sprite.y - v.sprite.displayHeight / 2 - 4, txt, { fontSize: '20px', color }).setOrigin(0.5);
+      this.tweens.add({ targets: float, y: float.y - 26, alpha: 0, duration: 600 / this.speed, onComplete: () => float.destroy() });
     } else if (ev.type === 'death') {
       const v = this.views.get(ev.target); if (!v) return;
       this.tweens.add({ targets: [v.sprite, v.label, v.hpBar, v.hpBack], alpha: 0.15, duration: 250 / this.speed });

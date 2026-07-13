@@ -1,11 +1,612 @@
 {
-  "normal.physical": { "id": "normal.physical", "job": "*", "unlockLevel": 1, "kind": "normal", "school": "physical", "governingStat": "PATK", "multiplier": 1.0, "hits": 1, "cooldown": 0, "targeting": "lowestHpEnemy", "castCondition": "always" },
-  "normal.magic":    { "id": "normal.magic", "job": "*", "unlockLevel": 1, "kind": "normal", "school": "magic", "governingStat": "MATK", "multiplier": 1.0, "hits": 1, "cooldown": 0, "targeting": "lowestHpEnemy", "castCondition": "always" },
-  "swordman.bash":       { "id": "swordman.bash", "job": "swordman", "unlockLevel": 5, "kind": "skill", "school": "physical", "governingStat": "PATK", "multiplier": 1.6, "hits": 1, "cooldown": 30, "targeting": "lowestHpEnemy", "castCondition": "always" },
-  "mage.fire_bolt":      { "id": "mage.fire_bolt", "job": "mage", "unlockLevel": 5, "kind": "skill", "school": "magic", "governingStat": "MATK", "multiplier": 1.7, "hits": 1, "cooldown": 30, "targeting": "lowestHpEnemy", "castCondition": "always" },
-  "archer.double_shot":  { "id": "archer.double_shot", "job": "archer", "unlockLevel": 5, "kind": "skill", "school": "physical", "governingStat": "PATK", "multiplier": 0.85, "hits": 2, "cooldown": 30, "targeting": "lowestHpEnemy", "castCondition": "always" },
-  "healer.holy_light":   { "id": "healer.holy_light", "job": "healer", "unlockLevel": 5, "kind": "skill", "school": "magic", "governingStat": "MATK", "multiplier": 1.5, "hits": 1, "cooldown": 30, "targeting": "lowestHpEnemy", "castCondition": "always" },
-  "healer.heal":         { "id": "healer.heal", "job": "healer", "unlockLevel": 15, "kind": "skill", "school": "heal", "governingStat": "MATK", "multiplier": 1.8, "hits": 1, "cooldown": 50, "targeting": "lowestHpAlly", "castCondition": "allyHp<=70" },
-  "monster.bounce":  { "id": "monster.bounce", "job": "monster", "unlockLevel": 1, "kind": "skill", "school": "physical", "governingStat": "PATK", "multiplier": 1.2, "hits": 1, "cooldown": 70, "targeting": "lowestHpEnemy", "castCondition": "always" },
-  "monster.charge":  { "id": "monster.charge", "job": "monster", "unlockLevel": 1, "kind": "skill", "school": "physical", "governingStat": "PATK", "multiplier": 1.6, "hits": 1, "cooldown": 80, "targeting": "lowestHpEnemy", "castCondition": "always" }
+ "normal.physical": {
+  "id": "normal.physical",
+  "job": "*",
+  "unlockLevel": 1,
+  "kind": "normal",
+  "school": "physical",
+  "governingStat": "PATK",
+  "multiplier": 1.0,
+  "hits": 1,
+  "cooldown": 0,
+  "targeting": "lowestHpEnemy",
+  "castCondition": "always"
+ },
+ "normal.magic": {
+  "id": "normal.magic",
+  "job": "*",
+  "unlockLevel": 1,
+  "kind": "normal",
+  "school": "magic",
+  "governingStat": "MATK",
+  "multiplier": 1.0,
+  "hits": 1,
+  "cooldown": 0,
+  "targeting": "lowestHpEnemy",
+  "castCondition": "always"
+ },
+ "swordman.bash": {
+  "id": "swordman.bash",
+  "job": "swordman",
+  "unlockLevel": 5,
+  "kind": "skill",
+  "school": "physical",
+  "governingStat": "PATK",
+  "multiplier": 1.6,
+  "hits": 1,
+  "cooldown": 30,
+  "targeting": "lowestHpEnemy",
+  "castCondition": "always"
+ },
+ "swordman.weapon_mastery": {
+  "id": "swordman.weapon_mastery",
+  "job": "swordman",
+  "unlockLevel": 10,
+  "kind": "passive",
+  "school": "buff",
+  "governingStat": "PATK",
+  "multiplier": 0,
+  "hits": 0,
+  "cooldown": 0,
+  "targeting": "self",
+  "castCondition": "always",
+  "effects": [
+   {
+    "type": "statMod",
+    "stat": "patk",
+    "pct": 10,
+    "duration": 0
+   }
+  ]
+ },
+ "swordman.provoke": {
+  "id": "swordman.provoke",
+  "job": "swordman",
+  "unlockLevel": 15,
+  "kind": "skill",
+  "school": "debuff",
+  "governingStat": "PATK",
+  "multiplier": 0,
+  "hits": 1,
+  "cooldown": 80,
+  "targeting": "highestAtkEnemy",
+  "castCondition": "always",
+  "effects": [
+   {
+    "type": "statMod",
+    "stat": "def",
+    "pct": -15,
+    "duration": 100
+   }
+  ]
+ },
+ "swordman.sword_wave": {
+  "id": "swordman.sword_wave",
+  "job": "swordman",
+  "unlockLevel": 25,
+  "kind": "skill",
+  "school": "physical",
+  "governingStat": "PATK",
+  "multiplier": 1.1,
+  "hits": 1,
+  "cooldown": 70,
+  "targeting": "allEnemies",
+  "castCondition": "targets>=2"
+ },
+ "swordman.dragon_cleave": {
+  "id": "swordman.dragon_cleave",
+  "job": "swordman",
+  "unlockLevel": 30,
+  "kind": "ultimate",
+  "school": "physical",
+  "governingStat": "PATK",
+  "multiplier": 3.5,
+  "hits": 1,
+  "cooldown": 0,
+  "targeting": "lowestHpEnemy",
+  "castCondition": "always"
+ },
+ "swordman.counter_stance": {
+  "id": "swordman.counter_stance",
+  "job": "swordman",
+  "unlockLevel": 35,
+  "kind": "skill",
+  "school": "buff",
+  "governingStat": "PATK",
+  "multiplier": 0,
+  "hits": 1,
+  "cooldown": 150,
+  "targeting": "self",
+  "castCondition": "selfHp<=60",
+  "effects": [
+   {
+    "type": "statMod",
+    "stat": "def",
+    "pct": 30,
+    "duration": 80
+   }
+  ]
+ },
+ "swordman.fatal_slash": {
+  "id": "swordman.fatal_slash",
+  "job": "swordman",
+  "unlockLevel": 45,
+  "kind": "skill",
+  "school": "physical",
+  "governingStat": "PATK",
+  "multiplier": 2.4,
+  "hits": 1,
+  "cooldown": 100,
+  "targeting": "lowestHpEnemy",
+  "castCondition": "always"
+ },
+ "mage.fire_bolt": {
+  "id": "mage.fire_bolt",
+  "job": "mage",
+  "unlockLevel": 5,
+  "kind": "skill",
+  "school": "magic",
+  "governingStat": "MATK",
+  "multiplier": 1.7,
+  "hits": 1,
+  "cooldown": 30,
+  "targeting": "lowestHpEnemy",
+  "castCondition": "always"
+ },
+ "mage.arcane_mind": {
+  "id": "mage.arcane_mind",
+  "job": "mage",
+  "unlockLevel": 10,
+  "kind": "passive",
+  "school": "buff",
+  "governingStat": "MATK",
+  "multiplier": 0,
+  "hits": 0,
+  "cooldown": 0,
+  "targeting": "self",
+  "castCondition": "always",
+  "effects": [
+   {
+    "type": "statMod",
+    "stat": "matk",
+    "pct": 10,
+    "duration": 0
+   }
+  ]
+ },
+ "mage.ice_spike": {
+  "id": "mage.ice_spike",
+  "job": "mage",
+  "unlockLevel": 15,
+  "kind": "skill",
+  "school": "magic",
+  "governingStat": "MATK",
+  "multiplier": 1.1,
+  "hits": 1,
+  "cooldown": 70,
+  "targeting": "allEnemies",
+  "castCondition": "targets>=2"
+ },
+ "mage.arcane_barrier": {
+  "id": "mage.arcane_barrier",
+  "job": "mage",
+  "unlockLevel": 25,
+  "kind": "skill",
+  "school": "buff",
+  "governingStat": "MATK",
+  "multiplier": 0,
+  "hits": 1,
+  "cooldown": 140,
+  "targeting": "self",
+  "castCondition": "selfHp<=70",
+  "effects": [
+   {
+    "type": "statMod",
+    "stat": "def",
+    "pct": 25,
+    "duration": 80
+   }
+  ]
+ },
+ "mage.inferno": {
+  "id": "mage.inferno",
+  "job": "mage",
+  "unlockLevel": 30,
+  "kind": "ultimate",
+  "school": "magic",
+  "governingStat": "MATK",
+  "multiplier": 2.8,
+  "hits": 1,
+  "cooldown": 0,
+  "targeting": "allEnemies",
+  "castCondition": "always"
+ },
+ "mage.chain_lightning": {
+  "id": "mage.chain_lightning",
+  "job": "mage",
+  "unlockLevel": 35,
+  "kind": "skill",
+  "school": "magic",
+  "governingStat": "MATK",
+  "multiplier": 0.9,
+  "hits": 1,
+  "cooldown": 80,
+  "targeting": "randomEnemies",
+  "targetCount": 3,
+  "castCondition": "always"
+ },
+ "mage.meteor_shard": {
+  "id": "mage.meteor_shard",
+  "job": "mage",
+  "unlockLevel": 45,
+  "kind": "skill",
+  "school": "magic",
+  "governingStat": "MATK",
+  "multiplier": 2.6,
+  "hits": 1,
+  "cooldown": 110,
+  "targeting": "lowestHpEnemy",
+  "castCondition": "always"
+ },
+ "archer.double_shot": {
+  "id": "archer.double_shot",
+  "job": "archer",
+  "unlockLevel": 5,
+  "kind": "skill",
+  "school": "physical",
+  "governingStat": "PATK",
+  "multiplier": 0.85,
+  "hits": 2,
+  "cooldown": 30,
+  "targeting": "lowestHpEnemy",
+  "castCondition": "always"
+ },
+ "archer.eagle_eye": {
+  "id": "archer.eagle_eye",
+  "job": "archer",
+  "unlockLevel": 10,
+  "kind": "passive",
+  "school": "buff",
+  "governingStat": "PATK",
+  "multiplier": 0,
+  "hits": 0,
+  "cooldown": 0,
+  "targeting": "self",
+  "castCondition": "always",
+  "effects": [
+   {
+    "type": "statMod",
+    "stat": "critDmg",
+    "flat": 15,
+    "duration": 0
+   }
+  ]
+ },
+ "archer.take_aim": {
+  "id": "archer.take_aim",
+  "job": "archer",
+  "unlockLevel": 15,
+  "kind": "skill",
+  "school": "buff",
+  "governingStat": "PATK",
+  "multiplier": 0,
+  "hits": 1,
+  "cooldown": 150,
+  "targeting": "self",
+  "castCondition": "always",
+  "effects": [
+   {
+    "type": "statMod",
+    "stat": "hit",
+    "flat": 20,
+    "duration": 100
+   },
+   {
+    "type": "statMod",
+    "stat": "critRate",
+    "flat": 10,
+    "duration": 100
+   }
+  ]
+ },
+ "archer.arrow_rain": {
+  "id": "archer.arrow_rain",
+  "job": "archer",
+  "unlockLevel": 25,
+  "kind": "skill",
+  "school": "physical",
+  "governingStat": "PATK",
+  "multiplier": 1.0,
+  "hits": 1,
+  "cooldown": 80,
+  "targeting": "allEnemies",
+  "castCondition": "targets>=2"
+ },
+ "archer.storm_of_arrows": {
+  "id": "archer.storm_of_arrows",
+  "job": "archer",
+  "unlockLevel": 30,
+  "kind": "ultimate",
+  "school": "physical",
+  "governingStat": "PATK",
+  "multiplier": 0.9,
+  "hits": 1,
+  "cooldown": 0,
+  "targeting": "randomEnemies",
+  "targetCount": 5,
+  "castCondition": "always"
+ },
+ "archer.piercing_arrow": {
+  "id": "archer.piercing_arrow",
+  "job": "archer",
+  "unlockLevel": 35,
+  "kind": "skill",
+  "school": "physical",
+  "governingStat": "PATK",
+  "multiplier": 1.8,
+  "hits": 1,
+  "cooldown": 70,
+  "targeting": "lowestHpEnemy",
+  "castCondition": "always",
+  "effects": [
+   {
+    "type": "ignoreDefPct",
+    "value": 30
+   }
+  ]
+ },
+ "archer.snipe": {
+  "id": "archer.snipe",
+  "job": "archer",
+  "unlockLevel": 45,
+  "kind": "skill",
+  "school": "physical",
+  "governingStat": "PATK",
+  "multiplier": 2.5,
+  "hits": 1,
+  "cooldown": 110,
+  "targeting": "lowestHpEnemy",
+  "castCondition": "always",
+  "effects": [
+   {
+    "type": "bonusCritRate",
+    "value": 20
+   }
+  ]
+ },
+ "healer.holy_light": {
+  "id": "healer.holy_light",
+  "job": "healer",
+  "unlockLevel": 5,
+  "kind": "skill",
+  "school": "magic",
+  "governingStat": "MATK",
+  "multiplier": 1.5,
+  "hits": 1,
+  "cooldown": 30,
+  "targeting": "lowestHpEnemy",
+  "castCondition": "always"
+ },
+ "healer.divine_grace": {
+  "id": "healer.divine_grace",
+  "job": "healer",
+  "unlockLevel": 10,
+  "kind": "passive",
+  "school": "buff",
+  "governingStat": "MATK",
+  "multiplier": 0,
+  "hits": 0,
+  "cooldown": 0,
+  "targeting": "self",
+  "castCondition": "always",
+  "effects": [
+   {
+    "type": "healingDealtPct",
+    "value": 20
+   }
+  ]
+ },
+ "healer.heal": {
+  "id": "healer.heal",
+  "job": "healer",
+  "unlockLevel": 15,
+  "kind": "skill",
+  "school": "heal",
+  "governingStat": "MATK",
+  "multiplier": 1.8,
+  "hits": 1,
+  "cooldown": 50,
+  "targeting": "lowestHpAlly",
+  "castCondition": "allyHp<=70"
+ },
+ "healer.blessing": {
+  "id": "healer.blessing",
+  "job": "healer",
+  "unlockLevel": 25,
+  "kind": "skill",
+  "school": "buff",
+  "governingStat": "MATK",
+  "multiplier": 0,
+  "hits": 1,
+  "cooldown": 150,
+  "targeting": "self",
+  "castCondition": "always",
+  "effects": [
+   {
+    "type": "statMod",
+    "stat": "patk",
+    "pct": 10,
+    "duration": 100
+   },
+   {
+    "type": "statMod",
+    "stat": "matk",
+    "pct": 10,
+    "duration": 100
+   }
+  ]
+ },
+ "healer.miracle": {
+  "id": "healer.miracle",
+  "job": "healer",
+  "unlockLevel": 30,
+  "kind": "ultimate",
+  "school": "heal",
+  "governingStat": "MATK",
+  "multiplier": 3.0,
+  "hits": 1,
+  "cooldown": 0,
+  "targeting": "lowestHpAlly",
+  "castCondition": "always",
+  "effects": [
+   {
+    "type": "cleanse"
+   }
+  ]
+ },
+ "healer.purify": {
+  "id": "healer.purify",
+  "job": "healer",
+  "unlockLevel": 35,
+  "kind": "skill",
+  "school": "heal",
+  "governingStat": "MATK",
+  "multiplier": 0.8,
+  "hits": 1,
+  "cooldown": 90,
+  "targeting": "self",
+  "castCondition": "selfHasDebuff",
+  "effects": [
+   {
+    "type": "cleanse"
+   }
+  ]
+ },
+ "healer.sanctuary": {
+  "id": "healer.sanctuary",
+  "job": "healer",
+  "unlockLevel": 45,
+  "kind": "skill",
+  "school": "heal",
+  "governingStat": "MATK",
+  "multiplier": 1.2,
+  "hits": 1,
+  "cooldown": 120,
+  "targeting": "self",
+  "castCondition": "selfHp<=50",
+  "effects": [
+   {
+    "type": "statMod",
+    "stat": "def",
+    "pct": 15,
+    "duration": 60
+   }
+  ]
+ },
+ "monster.bounce": {
+  "id": "monster.bounce",
+  "job": "monster",
+  "unlockLevel": 1,
+  "kind": "skill",
+  "school": "physical",
+  "governingStat": "PATK",
+  "multiplier": 1.2,
+  "hits": 1,
+  "cooldown": 70,
+  "targeting": "lowestHpEnemy",
+  "castCondition": "always"
+ },
+ "monster.charge": {
+  "id": "monster.charge",
+  "job": "monster",
+  "unlockLevel": 1,
+  "kind": "skill",
+  "school": "physical",
+  "governingStat": "PATK",
+  "multiplier": 1.6,
+  "hits": 1,
+  "cooldown": 80,
+  "targeting": "lowestHpEnemy",
+  "castCondition": "always"
+ },
+ "monster.venom_bite": {
+  "id": "monster.venom_bite",
+  "job": "monster",
+  "unlockLevel": 1,
+  "kind": "skill",
+  "school": "magic",
+  "governingStat": "MATK",
+  "multiplier": 1.1,
+  "hits": 1,
+  "cooldown": 80,
+  "targeting": "lowestHpEnemy",
+  "castCondition": "always",
+  "effects": [
+   {
+    "type": "dot",
+    "stat": "MATK",
+    "mult": 0.25,
+    "interval": 10,
+    "duration": 50
+   }
+  ]
+ },
+ "monster.toxic_spit": {
+  "id": "monster.toxic_spit",
+  "job": "monster",
+  "unlockLevel": 1,
+  "kind": "skill",
+  "school": "magic",
+  "governingStat": "MATK",
+  "multiplier": 1.2,
+  "hits": 1,
+  "cooldown": 75,
+  "targeting": "lowestHpEnemy",
+  "castCondition": "always"
+ },
+ "monster.root_slam": {
+  "id": "monster.root_slam",
+  "job": "monster",
+  "unlockLevel": 1,
+  "kind": "skill",
+  "school": "physical",
+  "governingStat": "PATK",
+  "multiplier": 1.5,
+  "hits": 1,
+  "cooldown": 85,
+  "targeting": "lowestHpEnemy",
+  "castCondition": "always"
+ },
+ "monster.sting": {
+  "id": "monster.sting",
+  "job": "monster",
+  "unlockLevel": 1,
+  "kind": "skill",
+  "school": "physical",
+  "governingStat": "PATK",
+  "multiplier": 1.3,
+  "hits": 1,
+  "cooldown": 70,
+  "targeting": "lowestHpEnemy",
+  "castCondition": "always",
+  "effects": [
+   {
+    "type": "bonusCritRate",
+    "value": 15
+   }
+  ]
+ },
+ "monster.mug": {
+  "id": "monster.mug",
+  "job": "monster",
+  "unlockLevel": 1,
+  "kind": "skill",
+  "school": "physical",
+  "governingStat": "PATK",
+  "multiplier": 1.4,
+  "hits": 1,
+  "cooldown": 75,
+  "targeting": "lowestHpEnemy",
+  "castCondition": "always"
+ }
 }

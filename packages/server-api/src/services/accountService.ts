@@ -6,6 +6,7 @@ export interface JobRow {
   job_id: string; level: number; exp: number; rebirth_count: number;
   stat_str: number; stat_dex: number; stat_con: number; stat_int: number;
   unspent_points: number;
+  priority_slots: (string | null)[];
 }
 export interface ItemRow { id: number; item_id: string; rarity: string; enhance_level: number; equipped_slot: string | null; }
 
@@ -53,7 +54,7 @@ export function primaryStatsFor(jobRow: JobRow): PrimaryStats {
 
 /** Sum equipped gear bonuses with rarity + enhancement multipliers (docs/04-items/01-02). */
 export function gearBonusFor(items: ItemRow[], rarityMult: Record<string, number>): GearBonus {
-  const total: Required<GearBonus> = { patk: 0, matk: 0, def: 0, hp: 0, spd: 0 };
+  const total: Required<GearBonus> = { patk: 0, matk: 0, def: 0, hp: 0, spd: 0, critRate: 0 };
   for (const it of items) {
     if (!it.equipped_slot) continue;
     const def = ITEMS[it.item_id];
@@ -64,6 +65,7 @@ export function gearBonusFor(items: ItemRow[], rarityMult: Record<string, number
     total.def += Math.floor((def.stats.def ?? 0) * mult);
     total.hp += Math.floor((def.stats.hp ?? 0) * mult);
     total.spd += Math.floor((def.stats.spd ?? 0) * mult);
+    total.critRate += Math.floor((def.stats.critRate ?? 0) * mult);
   }
   return total;
 }
